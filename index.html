@@ -44,11 +44,31 @@
         </div>
     </section>
 
-    <!-- Pengumuman Tender (Dengan Tabel Interaktif) -->
+    <!-- Pengumuman Tender (Dengan Tabel Interaktif dan Form Upload) -->
     <section id="tenders" class="py-5">
         <div class="container">
             <h2 class="text-center mb-4">Pengumuman Tender Terbaru</h2>
             <input type="text" id="searchInput" class="form-control mb-3" placeholder="Cari pengadaan...">
+            
+            <!-- Form Tambah Pengadaan Baru (Admin) -->
+            <div class="mb-4">
+                <h3>Tambah Pengadaan Baru (Admin)</h3>
+                <form id="addTenderForm" class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" id="tenderName" class="form-control" placeholder="Nama Pengadaan" required>
+                    </div>
+                    <div class="col-md-4">
+                        <textarea id="tenderDesc" class="form-control" placeholder="Deskripsi" rows="2" required></textarea>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="date" id="tenderDeadline" class="form-control" required>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-success w-100">Tambah</button>
+                    </div>
+                </form>
+            </div>
+
             <div class="table-responsive">
                 <table id="tendersTable" class="table table-striped table-hover">
                     <thead class="table-dark">
@@ -62,46 +82,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Tambahkan pengadaan baru di sini (edit manual di GitHub) -->
-                        <tr>
-                            <td>1</td>
-                            <td>Pembelian Komputer</td>
-                            <td>50 unit laptop untuk kantor pemerintah</td>
-                            <td>15 Okt 2023</td>
-                            <td><span class="badge bg-success">Dibuka</span></td>
-                            <td><button class="btn btn-primary btn-sm" onclick="showDetail(1)">Detail</button></td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Jasa Konsultasi IT</td>
-                            <td>Analisis dan pengembangan sistem informasi</td>
-                            <td>20 Okt 2023</td>
-                            <td><span class="badge bg-danger">Ditutup</span></td>
-                            <td><button class="btn btn-primary btn-sm" onclick="showDetail(2)">Detail</button></td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Pengadaan Alat Tulis</td>
-                            <td>1000 paket alat tulis kantor</td>
-                            <td>25 Okt 2023</td>
-                            <td><span class="badge bg-success">Dibuka</span></td>
-                            <td><button class="btn btn-primary btn-sm" onclick="showDetail(3)">Detail</button></td>
-                        </tr>
-                        <!-- Contoh tambahan: Hapus komentar di bawah untuk menambah pengadaan baru -->
-                        <!--
-                        <tr>
-                            <td>4</td>
-                            <td>Pengadaan Mobil</td>
-                            <td>10 unit mobil dinas</td>
-                            <td>30 Okt 2023</td>
-                            <td><span class="badge bg-success">Dibuka</span></td>
-                            <td><button class="btn btn-primary btn-sm" onclick="showDetail(4)">Detail</button></td>
-                        </tr>
-                        -->
+                        <!-- Data akan diisi otomatis dari Firebase -->
                     </tbody>
                 </table>
             </div>
-            <p class="text-muted mt-3"><em>Untuk menambah pengadaan baru: Edit file ini di GitHub, tambahkan baris di <tbody>, dan update objek tenderDetails di JavaScript.</em></p>
         </div>
     </section>
 
@@ -129,7 +113,7 @@
                             <textarea class="form-control" id="alamat" rows="3" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="file" class="form-label">Upload Dokumen (Simulasi)</label>
+                            <label for="file" class="form-label">Upload Dokumen</label>
                             <input type="file" class="form-control" id="file">
                         </div>
                         <button type="submit" class="btn btn-success w-100">Daftar</button>
@@ -172,31 +156,92 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Data detail tender (simulasi) - Edit di sini untuk tambah detail baru
-        const tenderDetails = {
-            1: { title: "Pembelian Komputer", desc: "Detail lengkap: 50 unit laptop dengan spesifikasi i5, 8GB RAM. Anggaran: Rp 500 juta.", deadline: "15 Okt 2023" },
-            2: { title: "Jasa Konsultasi IT", desc: "Detail lengkap: Analisis sistem selama 3 bulan. Anggaran: Rp 200 juta.", deadline: "20 Okt 2023" },
-            3: { title: "Pengadaan Alat Tulis", desc: "Detail lengkap: 1000 paket lengkap. Anggaran: Rp 50 juta.", deadline: "25 Okt 2023" },
-            // Contoh tambahan: Hapus komentar di bawah untuk menambah detail
-            // 4: { title: "Pengadaan Mobil", desc: "Detail lengkap: 10 unit mobil dengan spesifikasi sedan. Anggaran: Rp 1 miliar.", deadline: "30 Okt 2023" }
-        };
+    
+    <!-- Firebase Scripts -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        // Fungsi tampilkan detail
-        function showDetail(id) {
-            const detail = tenderDetails[id];
-            if (detail) {
-                document.getElementById('modalBody').innerHTML = `
-                    <h6>${detail.title}</h6>
-                    <p>${detail.desc}</p>
-                    <p><strong>Deadline:</strong> ${detail.deadline}</p>
-                `;
-                new bootstrap.Modal(document.getElementById('detailModal')).show();
-            } else {
-                alert("Detail tidak ditemukan. Pastikan ID cocok dengan data di tenderDetails.");
+        // Ganti dengan config Firebase Anda (dari Firebase Console)
+        const firebaseConfig = {
+            apiKey: "your-api-key-here",
+            authDomain: "your-project.firebaseapp.com",
+            projectId: "your-project-id",
+            storageBucket: "your-project.appspot.com",
+            messagingSenderId: "your-sender-id",
+            appId: "your-app-id"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Fungsi load tenders dari Firestore
+        async function loadTenders() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "tenders"));
+                const tbody = document.querySelector('#tendersTable tbody');
+                tbody.innerHTML = '';
+                let id = 1;
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${id++}</td>
+                            <td>${data.name}</td>
+                            <td>${data.desc}</td>
+                            <td>${data.deadline}</td>
+                            <td><span class="badge bg-success">${data.status || 'Dibuka'}</span></td>
+                            <td><button class="btn btn-primary btn-sm" onclick="showDetail('${docSnap.id}')">Detail</button></td>
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error("Error loading tenders:", error);
             }
         }
 
+        // Fungsi tambah tender
+        document.getElementById('addTenderForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('tenderName').value;
+            const desc = document.getElementById('tenderDesc').value;
+            const deadline = document.getElementById('tenderDeadline').value;
+            try {
+                await addDoc(collection(db, "tenders"), { name, desc, deadline, status: "Dibuka" });
+                alert("Pengadaan berhasil ditambahkan!");
+                document.getElementById('addTenderForm').reset();
+                loadTenders();  // Reload tabel
+            } catch (error) {
+                console.error("Error adding tender:", error);
+                alert("Gagal menambah pengadaan. Cek console untuk detail.");
+            }
+        });
+
+        // Fungsi tampilkan detail
+        window.showDetail = async function(id) {
+            try {
+                const docSnap = await getDoc(doc(db, "tenders", id));
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('modalBody').innerHTML = `
+                        <h6>${data.name}</h6>
+                        <p>${data.desc}</p>
+                        <p><strong>Deadline:</strong> ${data.deadline}</p>
+                        <p><strong>Status:</strong> ${data.status || 'Dibuka'}</p>
+                    `;
+                    new bootstrap.Modal(document.getElementById('detailModal')).show();
+                } else {
+                    alert("Detail tidak ditemukan.");
+                }
+            } catch (error) {
+                console.error("Error showing detail:", error);
+            }
+        };
+
+        // Load tenders saat halaman load
+        window.onload = loadTenders;
+    </script>
+
+    <script>
         // Filter tabel
         document.getElementById('searchInput').addEventListener('keyup', function() {
             const filter = this.value.toLowerCase();
@@ -207,7 +252,7 @@
             });
         });
 
-        // Validasi form
+        // Validasi form pendaftaran
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
             alert('Pendaftaran berhasil! (Simulasi - data tidak disimpan)');
