@@ -14,7 +14,7 @@
         .card { transition: transform 0.3s; }
         .card:hover { transform: scale(1.05); }
         footer { background-color: #343a40; color: white; padding: 20px 0; }
-        .admin-only { display: none; } /* Sembunyikan sampai login */
+        .admin-only { display: none; }
     </style>
 </head>
 <body>
@@ -53,7 +53,6 @@
             <h2 class="text-center mb-4">Pengumuman Tender Terbaru</h2>
             <input type="text" id="searchInput" class="form-control mb-3" placeholder="Cari pengadaan...">
             
-            <!-- Panel Admin (Tersembunyi sampai login) -->
             <div id="adminPanel" class="admin-only mb-4">
                 <h3>Tambah Pengadaan Baru (Admin)</h3>
                 <form id="addTenderForm" class="row g-3">
@@ -117,7 +116,7 @@
                             <textarea class="form-control" id="alamat" rows="3" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="file" class="form-label">Upload Dokumen (Simulasi)</label>
+                            <label for="file" class="form-label">Upload Dokumen</label>
                             <input type="file" class="form-control" id="file">
                         </div>
                         <button type="submit" class="btn btn-success w-100">Daftar</button>
@@ -192,7 +191,7 @@
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        // Ganti dengan config Firebase Anda
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
         const firebaseConfig = {
             apiKey: "AIzaSyArYnPXsCXCzdQIpDQ0XxgW_vJYEzLeqAg",
             authDomain: "pt-bidakara-indah-sejahtera.firebaseapp.com",
@@ -200,6 +199,7 @@
             storageBucket: "pt-bidakara-indah-sejahtera.firebasestorage.app",
             messagingSenderId: "112946385367",
             appId: "1:112946385367:web:a695c2acc28a318b077b92"
+            measurementId: "G-41WKPCDDGK"
         };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -241,11 +241,6 @@
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             await signOut(auth);
             alert('Logout berhasil!');
-        });
-
-        // Tampilkan modal login
-        document.getElementById('loginBtn').addEventListener('click', () => {
-            new bootstrap.Modal(document.getElementById('loginModal')).show();
         });
 
         // Load tenders
@@ -300,4 +295,21 @@
                 let csv = 'No,Nama Pengadaan,Deskripsi,Deadline,Status\n';
                 let id = 1;
                 querySnapshot.forEach((docSnap) => {
-                    const data = docSnap.data
+                    const data = docSnap.data();
+                    csv += `${id++},"${data.name}","${data.desc}","${data.deadline}","${data.status || 'Dibuka'}"\n`;
+                });
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'data_pengadaan.csv';
+                a.click();
+                URL.revokeObjectURL(url);
+            } catch (error) {
+                console.error("Error downloading:", error);
+                alert("Gagal download data.");
+            }
+        });
+
+        // Fungsi tampilkan detail
+        window.showDetail = async function(id)
