@@ -14,6 +14,7 @@
         .card { transition: transform 0.3s; }
         .card:hover { transform: scale(1.05); }
         footer { background-color: #343a40; color: white; padding: 20px 0; }
+        .admin-only { display: none; } /* Sembunyikan sampai login */
     </style>
 </head>
 <body>
@@ -30,6 +31,8 @@
                     <li class="nav-item"><a class="nav-link" href="#tenders">Pengumuman</a></li>
                     <li class="nav-item"><a class="nav-link" href="#register">Daftar</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contact">Kontak</a></li>
+                    <li class="nav-item"><button id="loginBtn" class="btn btn-outline-light ms-3">Login Admin</button></li>
+                    <li class="nav-item"><button id="logoutBtn" class="btn btn-outline-light ms-3" style="display:none;">Logout</button></li>
                 </ul>
             </div>
         </div>
@@ -44,14 +47,14 @@
         </div>
     </section>
 
-    <!-- Pengumuman Tender (Dengan Tabel Interaktif dan Form Upload) -->
+    <!-- Pengumuman Tender -->
     <section id="tenders" class="py-5">
         <div class="container">
             <h2 class="text-center mb-4">Pengumuman Tender Terbaru</h2>
             <input type="text" id="searchInput" class="form-control mb-3" placeholder="Cari pengadaan...">
             
-            <!-- Form Tambah Pengadaan Baru (Admin) -->
-            <div class="mb-4">
+            <!-- Panel Admin (Tersembunyi sampai login) -->
+            <div id="adminPanel" class="admin-only mb-4">
                 <h3>Tambah Pengadaan Baru (Admin)</h3>
                 <form id="addTenderForm" class="row g-3">
                     <div class="col-md-4">
@@ -67,6 +70,7 @@
                         <button type="submit" class="btn btn-success w-100">Tambah</button>
                     </div>
                 </form>
+                <button id="downloadBtn" class="btn btn-info mt-3">Download Data Pengadaan (CSV)</button>
             </div>
 
             <div class="table-responsive">
@@ -82,7 +86,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Data akan diisi otomatis dari Firebase -->
+                        <!-- Data load dari Firebase -->
                     </tbody>
                 </table>
             </div>
@@ -113,7 +117,7 @@
                             <textarea class="form-control" id="alamat" rows="3" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="file" class="form-label">Upload Dokumen</label>
+                            <label for="file" class="form-label">Upload Dokumen (Simulasi)</label>
                             <input type="file" class="form-control" id="file">
                         </div>
                         <button type="submit" class="btn btn-success w-100">Daftar</button>
@@ -139,7 +143,32 @@
         </div>
     </footer>
 
-    <!-- Modal untuk Detail Tender -->
+    <!-- Modal Login -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Login Admin</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="loginEmail" class="form-label">Email</label>
+                            <input type="email" id="loginEmail" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">Password</label>
+                            <input type="password" id="loginPassword" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detail -->
     <div class="modal fade" id="detailModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -148,7 +177,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" id="modalBody">
-                    <!-- Konten akan diisi JS -->
+                    <!-- Konten JS -->
                 </div>
             </div>
         </div>
@@ -160,9 +189,10 @@
     <!-- Firebase Scripts -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        // Ganti dengan config Firebase Anda (dari Firebase Console)
+        // Ganti dengan config Firebase Anda
         const firebaseConfig = {
             apiKey: "AIzaSyArYnPXsCXCzdQIpDQ0XxgW_vJYEzLeqAg",
             authDomain: "pt-bidakara-indah-sejahtera.firebaseapp.com",
@@ -173,10 +203,55 @@
             measurementId: "G-41WKPCDDGK"
         };
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Fungsi load tenders dari Firestore
+        let currentUser = null;
+
+        // Cek login
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user) {
+                document.getElementById('loginBtn').style.display = 'none';
+                document.getElementById('logoutBtn').style.display = 'inline-block';
+                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
+                loadTenders();
+            } else {
+                document.getElementById('loginBtn').style.display = 'inline-block';
+                document.getElementById('logoutBtn').style.display = 'none';
+                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+                document.querySelector('#tendersTable tbody').innerHTML = '<tr><td colspan="6" class="text-center">Login sebagai admin untuk melihat data.</td></tr>';
+            }
+        });
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+                alert('Login berhasil!');
+            } catch (error) {
+                alert('Login gagal: ' + error.message);
+            }
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await signOut(auth);
+            alert('Logout berhasil!');
+        });
+
+        // Tampilkan modal login
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            new bootstrap.Modal(document.getElementById('loginModal')).show();
+        });
+
+        // Load tenders
         async function loadTenders() {
+            if (!currentUser) return;
             try {
                 const querySnapshot = await getDocs(collection(db, "tenders"));
                 const tbody = document.querySelector('#tendersTable tbody');
@@ -200,9 +275,10 @@
             }
         }
 
-        // Fungsi tambah tender
+        // Tambah tender
         document.getElementById('addTenderForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (!currentUser) return alert('Login sebagai admin dulu!');
             const name = document.getElementById('tenderName').value;
             const desc = document.getElementById('tenderDesc').value;
             const deadline = document.getElementById('tenderDeadline').value;
@@ -210,55 +286,19 @@
                 await addDoc(collection(db, "tenders"), { name, desc, deadline, status: "Dibuka" });
                 alert("Pengadaan berhasil ditambahkan!");
                 document.getElementById('addTenderForm').reset();
-                loadTenders();  // Reload tabel
+                loadTenders();
             } catch (error) {
                 console.error("Error adding tender:", error);
-                alert("Gagal menambah pengadaan. Cek console untuk detail.");
+                alert("Gagal menambah pengadaan.");
             }
         });
 
-        // Fungsi tampilkan detail
-        window.showDetail = async function(id) {
+        // Download CSV
+        document.getElementById('downloadBtn').addEventListener('click', async () => {
+            if (!currentUser) return alert('Login sebagai admin dulu!');
             try {
-                const docSnap = await getDoc(doc(db, "tenders", id));
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    document.getElementById('modalBody').innerHTML = `
-                        <h6>${data.name}</h6>
-                        <p>${data.desc}</p>
-                        <p><strong>Deadline:</strong> ${data.deadline}</p>
-                        <p><strong>Status:</strong> ${data.status || 'Dibuka'}</p>
-                    `;
-                    new bootstrap.Modal(document.getElementById('detailModal')).show();
-                } else {
-                    alert("Detail tidak ditemukan.");
-                }
-            } catch (error) {
-                console.error("Error showing detail:", error);
-            }
-        };
-
-        // Load tenders saat halaman load
-        window.onload = loadTenders;
-    </script>
-
-    <script>
-        // Filter tabel
-        document.getElementById('searchInput').addEventListener('keyup', function() {
-            const filter = this.value.toLowerCase();
-            const rows = document.querySelectorAll('#tendersTable tbody tr');
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(filter) ? '' : 'none';
-            });
-        });
-
-        // Validasi form pendaftaran
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Pendaftaran berhasil! (Simulasi - data tidak disimpan)');
-            this.reset();
-        });
-    </script>
-</body>
-</html>
+                const querySnapshot = await getDocs(collection(db, "tenders"));
+                let csv = 'No,Nama Pengadaan,Deskripsi,Deadline,Status\n';
+                let id = 1;
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data
