@@ -21,7 +21,7 @@
         .section-title { position: relative; display: inline-block; padding-bottom: 10px; margin-bottom: 30px; }
         .section-title::after { content: ''; position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 50px; height: 3px; background-color: #0d6efd; }
         
-        /* Pengaturan Logo Awal (Ikon Bangunan) */
+        /* Pengaturan Logo Default (Bangunan) */
         .brand-icon { font-size: 1.8rem; margin-right: 10px; color: #0d6efd; }
         .hero-icon { font-size: 5rem; margin-bottom: 20px; color: rgba(255,255,255,0.9); }
     </style>
@@ -308,7 +308,7 @@
             finally { btn.disabled = false; }
         });
 
-        // Menampilkan Tender (NAMA PENGADAAN BOLD)
+        // Menampilkan Tender (NAMA PENGADAAN BOLD & BUTTON PERPANJANG)
         async function loadTenders() {
             const tbody = document.querySelector('#tendersTable tbody');
             const today = new Date().toISOString().split('T')[0];
@@ -320,14 +320,22 @@
                 snap.forEach(docSnap => {
                     const d = docSnap.data();
                     const isExpired = today > d.deadline;
-                    let actions = `<a href="${d.fileUrl}" target="_blank" class="btn btn-outline-danger btn-sm"><i class="fas fa-file-pdf"></i></a>`;
+                    
+                    let actions = `<a href="${d.fileUrl}" target="_blank" class="btn btn-outline-danger btn-sm" title="Unduh PDF"><i class="fas fa-file-pdf"></i></a>`;
+                    
                     if(currentUser) {
-                        actions += `<button onclick="deleteTender('${docSnap.id}')" class="btn btn-dark btn-sm ms-1"><i class="fas fa-trash"></i></button>`;
+                        // Tombol Perpanjang (Kuning) & Tombol Hapus (Hitam)
+                        actions += `
+                            <button onclick="extendTender('${docSnap.id}', '${d.deadline}')" class="btn btn-warning btn-sm ms-1" title="Perpanjang Deadline"><i class="fas fa-clock"></i></button>
+                            <button onclick="deleteTender('${docSnap.id}')" class="btn btn-dark btn-sm ms-1" title="Hapus"><i class="fas fa-trash"></i></button>
+                        `;
                     }
+                    
                     tbody.innerHTML += `
                         <tr>
                             <td>${id++}</td>
-                            <td class="fw-bold text-primary">${d.name}</td> <td><small>${d.desc}</small></td>
+                            <td class="fw-bold text-primary">${d.name}</td>
+                            <td><small>${d.desc}</small></td>
                             <td class="${isExpired ? 'text-danger fw-bold' : ''}">${d.deadline}</td>
                             <td><span class="badge ${isExpired ? 'bg-danger':'bg-success'}">${isExpired ? 'Berakhir':'Dibuka'}</span></td>
                             <td class="text-center">${actions}</td>
@@ -336,7 +344,27 @@
             } catch (e) { console.error(e); }
         }
 
-        window.deleteTender = async (id) => { if(confirm("Hapus?")) { await deleteDoc(doc(db, "tenders", id)); loadTenders(); }};
+        // Fungsi Admin: Hapus Tender
+        window.deleteTender = async (id) => { 
+            if(confirm("Hapus tender ini?")) { 
+                await deleteDoc(doc(db, "tenders", id)); 
+                loadTenders(); 
+            }
+        };
+
+        // Fungsi Admin: Perpanjang Deadline (FITUR BARU)
+        window.extendTender = async (id, oldDate) => {
+            const newDate = prompt("Masukkan tanggal deadline baru (YYYY-MM-DD):", oldDate);
+            if(newDate && newDate !== oldDate) { 
+                try {
+                    await updateDoc(doc(db, "tenders", id), { deadline: newDate }); 
+                    alert("Deadline berhasil diperpanjang!");
+                    loadTenders(); 
+                } catch(e) {
+                    alert("Gagal memperpanjang: " + e.message);
+                }
+            }
+        };
 
         // Database Vendor
         window.loadVendors = async function() {
