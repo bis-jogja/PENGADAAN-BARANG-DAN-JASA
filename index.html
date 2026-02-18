@@ -168,7 +168,7 @@
             transition: all 0.2s;
         }
 
-        .form-control:focus {
+        .form-control:focus, .form-select:focus {
             border-color: var(--accent-color);
             box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
         }
@@ -204,10 +204,16 @@
                         <a class="nav-link px-3" href="#tenders">Pengumuman</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link px-3" href="#submit-proposal">Kirim Penawaran</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link px-3" href="#register">Daftar Penyedia</a>
                     </li>
                     <li class="nav-item admin-only">
                         <a class="nav-link text-primary fw-bold px-3" href="#vendorListSection">Database Vendor</a>
+                    </li>
+                    <li class="nav-item admin-only">
+                        <a class="nav-link text-danger fw-bold px-3" href="#adminProposals">Penawaran Masuk</a>
                     </li>
                     <li class="nav-item ms-lg-3">
                         <button id="loginBtn" class="btn btn-outline-primary btn-sm px-4 rounded-pill">Admin Login</button>
@@ -295,6 +301,44 @@
         </div>
     </section>
 
+    <section id="submit-proposal" class="py-5" style="background: #e2e8f0;">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card shadow-lg p-5 border-0">
+                        <div class="text-center mb-5">
+                            <div class="bg-primary text-white d-inline-block p-3 rounded-circle mb-3 shadow">
+                                <i class="fas fa-file-upload fa-2x"></i>
+                            </div>
+                            <h2 class="fw-bold text-primary">Kirim Dokumen Penawaran</h2>
+                            <p class="text-muted">Khusus untuk vendor terdaftar. Silakan unggah proposal harga dan teknis Anda sesuai RKS tender.</p>
+                        </div>
+                        <form id="submitProposalForm">
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold text-uppercase">Email Perusahaan (Sesuai Pendaftaran)</label>
+                                <input type="email" id="propEmail" class="form-control" placeholder="Masukkan email untuk verifikasi data" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold text-uppercase">Pilih Tender Yang Diikuti</label>
+                                <select id="propTenderSelect" class="form-select" required>
+                                    <option value="">-- Memuat daftar tender aktif... --</option>
+                                    </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold text-uppercase">Unggah Dokumen Penawaran (PDF)</label>
+                                <input type="file" id="propFile" class="form-control" accept="application/pdf" required>
+                                <div class="form-text mt-2"><i class="fas fa-info-circle me-1"></i>Gabungkan profil perusahaan, harga, dan spek teknis dalam 1 file PDF.</div>
+                            </div>
+                            <button type="submit" id="btnSubmitProposal" class="btn btn-primary w-100 py-3 shadow-sm fw-bold">
+                                UNGGAH & KIRIM PENAWARAN
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="vendorListSection" class="py-5 admin-only" style="background: #fff;">
         <div class="container py-5">
             <div class="d-flex justify-content-between align-items-center mb-5">
@@ -326,7 +370,33 @@
         </div>
     </section>
 
-    <section id="register" class="py-5 bg-light">
+    <section id="adminProposals" class="py-5 admin-only" style="background: #f8fafc;">
+        <div class="container py-5">
+            <div class="mb-5 border-start border-4 border-danger ps-3">
+                <h2 class="fw-bold text-danger mb-1">Dokumen Penawaran Masuk</h2>
+                <p class="text-muted small">Daftar proposal harga dan teknis yang dikirimkan oleh vendor.</p>
+            </div>
+            <div class="card shadow-sm border-0">
+                <div class="table-responsive">
+                    <table id="proposalsTable" class="table table-hover align-middle mb-0">
+                        <thead class="bg-danger text-white">
+                            <tr>
+                                <th class="ps-4">Waktu Submit</th>
+                                <th>Tender Tujuan</th>
+                                <th>Nama Vendor</th>
+                                <th>Email</th>
+                                <th class="text-center pe-4">Dokumen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="register" class="py-5 bg-white">
         <div class="container py-5">
             <div class="row align-items-center g-5">
                 <div class="col-lg-5">
@@ -335,7 +405,7 @@
                         Dapatkan akses ke berbagai peluang pengadaan di lingkungan PT Bidakara Indah Sejahtera. Kami mengundang vendor profesional untuk tumbuh bersama.
                     </p>
                     <div class="d-flex gap-4 mb-4">
-                        <div class="bg-white p-3 rounded-4 shadow-sm h-100">
+                        <div class="bg-light p-3 rounded-4 shadow-sm h-100">
                             <i class="fas fa-check-double text-success fa-lg"></i>
                         </div>
                         <div>
@@ -344,7 +414,7 @@
                         </div>
                     </div>
                     <div class="d-flex gap-4">
-                        <div class="bg-white p-3 rounded-4 shadow-sm h-100">
+                        <div class="bg-light p-3 rounded-4 shadow-sm h-100">
                             <i class="fas fa-bolt text-warning fa-lg"></i>
                         </div>
                         <div>
@@ -354,25 +424,25 @@
                     </div>
                 </div>
                 <div class="col-lg-6 offset-lg-1">
-                    <div class="card shadow-2xl p-4 p-md-5 border-0">
+                    <div class="card shadow-2xl p-4 p-md-5 border-0 bg-light">
                         <form id="registerForm">
                             <div class="mb-4">
                                 <label class="form-label small fw-bold text-uppercase">Nama Perusahaan</label>
-                                <input type="text" class="form-control" id="regNama" placeholder="Contoh: PT Sukses Bersama" required>
+                                <input type="text" class="form-control bg-white" id="regNama" placeholder="Contoh: PT Sukses Bersama" required>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-4">
                                     <label class="form-label small fw-bold text-uppercase">Email Bisnis</label>
-                                    <input type="email" class="form-control" id="regEmail" placeholder="admin@perusahaan.com" required>
+                                    <input type="email" class="form-control bg-white" id="regEmail" placeholder="admin@perusahaan.com" required>
                                 </div>
                                 <div class="col-md-6 mb-4">
                                     <label class="form-label small fw-bold text-uppercase">Nomor WhatsApp</label>
-                                    <input type="tel" class="form-control" id="regWA" placeholder="0812xxxx" required>
+                                    <input type="tel" class="form-control bg-white" id="regWA" placeholder="0812xxxx" required>
                                 </div>
                             </div>
                             <div class="mb-4">
                                 <label class="form-label small fw-bold text-uppercase">Bidang Usaha</label>
-                                <select class="form-select" id="regUsaha" required>
+                                <select class="form-select bg-white" id="regUsaha" required>
                                     <option value="">Pilih Kategori...</option>
                                     <option value="Konstruksi">Konstruksi & Sipil</option>
                                     <option value="IT">Teknologi Informasi</option>
@@ -382,7 +452,7 @@
                             </div>
                             <div class="mb-4">
                                 <label class="form-label small fw-bold text-uppercase">Alamat Lengkap</label>
-                                <textarea class="form-control" id="regAlamat" rows="3" placeholder="Masukkan domisili resmi..." required></textarea>
+                                <textarea class="form-control bg-white" id="regAlamat" rows="3" placeholder="Masukkan domisili resmi..." required></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary w-100 py-3 shadow-lg fw-bold">
                                 DAFTARKAN PERUSAHAAN SAYA
@@ -410,9 +480,10 @@
                 <div class="col-md-3">
                     <h6 class="text-white fw-bold mb-4 text-uppercase">Tautan Cepat</h6>
                     <ul class="list-unstyled small d-flex flex-column gap-3">
-                        <li><a href="#home" class="text-decoration-none opacity-50">Beranda</a></li>
-                        <li><a href="#tenders" class="text-decoration-none opacity-50">Pengumuman Tender</a></li>
-                        <li><a href="#register" class="text-decoration-none opacity-50">Pendaftaran Penyedia</a></li>
+                        <li><a href="#home" class="text-decoration-none text-muted">Beranda</a></li>
+                        <li><a href="#tenders" class="text-decoration-none text-muted">Pengumuman Tender</a></li>
+                        <li><a href="#submit-proposal" class="text-decoration-none text-muted">Upload Penawaran</a></li>
+                        <li><a href="#register" class="text-decoration-none text-muted">Pendaftaran Penyedia</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
@@ -500,7 +571,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, query, orderBy, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        // TAMBAHAN IMPORT `where` UNTUK LOGIKA VALIDASI EMAIL
+        import { getFirestore, collection, addDoc, getDocs, doc, query, orderBy, deleteDoc, updateDoc, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
         // CONFIGURASI FIREBASE ASLI
         const firebaseConfig = {
@@ -519,8 +591,7 @@
 
         let currentUser = null;
 
-        /* AUTH STATE LISTENER
-        */
+        /* AUTH STATE LISTENER */
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             const adminEls = document.querySelectorAll('.admin-only');
@@ -530,6 +601,7 @@
                 document.getElementById('logoutBtn').style.display = 'inline-block';
                 adminEls.forEach(el => el.style.setProperty('display', 'block', 'important'));
                 loadVendors();
+                loadProposals(); // Load tabel penawaran untuk Admin
             } else {
                 document.getElementById('loginBtn').style.display = 'inline-block';
                 document.getElementById('logoutBtn').style.display = 'none';
@@ -538,8 +610,219 @@
             loadTenders();
         });
 
-        /* FUNGSI LOAD VENDOR (WITH CRUD)
-        */
+        /* ==============================================================
+           FUNGSI BARU: VENDOR UPLOAD PENAWARAN (SUBMIT PROPOSAL)
+           ============================================================== */
+        document.getElementById('submitProposalForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmitProposal');
+            const emailInput = document.getElementById('propEmail').value;
+            const tenderSelect = document.getElementById('propTenderSelect');
+            const tenderName = tenderSelect.options[tenderSelect.selectedIndex].text;
+            const fileInput = document.getElementById('propFile').files[0];
+            const originalText = btn.innerText;
+
+            btn.disabled = true;
+            btn.innerText = "Memverifikasi Vendor...";
+
+            try {
+                // 1. Validasi: Cek apakah email ada di database 'pendaftar'
+                const vendorQuery = query(collection(db, "pendaftar"), where("email", "==", emailInput));
+                const vendorSnap = await getDocs(vendorQuery);
+                
+                if (vendorSnap.empty) {
+                    alert("Email tidak ditemukan! Pastikan Anda sudah mendaftar sebagai penyedia/vendor terlebih dahulu.");
+                    btn.disabled = false;
+                    btn.innerText = originalText;
+                    return;
+                }
+                
+                const vendorData = vendorSnap.docs[0].data();
+                const namaPerusahaan = vendorData.namaPerusahaan;
+
+                btn.innerText = "Mengunggah Dokumen (Harap Tunggu)...";
+
+                // 2. Convert PDF ke Base64 & Upload ke Google Drive
+                const reader = new FileReader();
+                reader.readAsDataURL(fileInput);
+                reader.onload = async () => {
+                    const base64 = reader.result.split(',')[1];
+                    const response = await fetch(GDRIVE_SCRIPT_URL, { 
+                        method: "POST", 
+                        body: JSON.stringify({ 
+                            action: "upload", 
+                            base64: base64, 
+                            type: fileInput.type, 
+                            name: `PENAWARAN_${namaPerusahaan}_${tenderName}.pdf` 
+                        }) 
+                    });
+                    const result = await response.json();
+
+                    if(result.status === "success") {
+                        // 3. Simpan rekam jejak pengiriman proposal ke Firestore
+                        await addDoc(collection(db, "proposals"), {
+                            tenderId: tenderSelect.value,
+                            tenderName: tenderName,
+                            vendorEmail: emailInput,
+                            vendorName: namaPerusahaan,
+                            fileUrl: result.link,
+                            submittedAt: new Date().toISOString()
+                        });
+                        
+                        alert("Dokumen penawaran berhasil dikirim! Panitia akan segera meninjau berkas Anda."); 
+                        e.target.reset();
+                    } else {
+                        alert("Gagal mengunggah file. Silakan coba lagi.");
+                    }
+                    btn.disabled = false; 
+                    btn.innerText = originalText; 
+                };
+            } catch (err) {
+                alert("Terjadi kesalahan sistem: " + err.message);
+                btn.disabled = false;
+                btn.innerText = originalText;
+            }
+        });
+
+        /* ==============================================================
+           FUNGSI BARU: LOAD PROPOSAL UNTUK ADMIN
+           ============================================================== */
+        window.loadProposals = async function() {
+            const tbody = document.querySelector('#proposalsTable tbody');
+            const q = query(collection(db, "proposals"), orderBy("submittedAt", "desc"));
+            const snap = await getDocs(q);
+            tbody.innerHTML = '';
+            
+            snap.forEach(docSnap => {
+                const p = docSnap.data();
+                const dateObj = new Date(p.submittedAt);
+                const formattedDate = dateObj.toLocaleDateString('id-ID') + ' ' + dateObj.toLocaleTimeString('id-ID');
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="ps-4 small text-muted">${formattedDate}</td>
+                        <td class="fw-bold text-dark">${p.tenderName}</td>
+                        <td class="fw-semibold text-primary">${p.vendorName}</td>
+                        <td class="small text-muted">${p.vendorEmail}</td>
+                        <td class="text-center pe-4">
+                            <a href="${p.fileUrl}" target="_blank" class="btn btn-outline-danger btn-sm rounded-pill px-3 shadow-sm">
+                                <i class="fas fa-file-download me-1"></i> Buka PDF
+                            </a>
+                        </td>
+                    </tr>`;
+            });
+        };
+
+        /* ==============================================================
+           FUNGSI TENDER & BROADCAST (LOGIKA ASLI DIPERTAHANKAN)
+           ============================================================== */
+        document.getElementById('addTenderForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnAddTender');
+            const file = document.getElementById('tenderFile').files[0];
+            const originalText = btn.innerText;
+
+            btn.disabled = true; 
+            btn.innerText = "Processing File...";
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = async () => {
+                const base64 = reader.result.split(',')[1];
+                try {
+                    const response = await fetch(GDRIVE_SCRIPT_URL, { 
+                        method: "POST", 
+                        body: JSON.stringify({ action: "upload", base64: base64, type: file.type, name: file.name }) 
+                    });
+                    const result = await response.json();
+
+                    if(result.status === "success") {
+                        await addDoc(collection(db, "tenders"), {
+                            name: document.getElementById('tenderName').value,
+                            desc: document.getElementById('tenderDesc').value,
+                            deadline: document.getElementById('tenderDeadline').value,
+                            fileUrl: result.link,
+                            createdAt: new Date().toISOString()
+                        });
+
+                        const vendorSnap = await getDocs(collection(db, "pendaftar"));
+                        let emailList = [];
+                        vendorSnap.forEach(doc => { 
+                            if(doc.data().email && doc.data().email !== "-") emailList.push(doc.data().email); 
+                        });
+
+                        if (emailList.length > 0) {
+                            await fetch(GDRIVE_SCRIPT_URL, {
+                                method: "POST",
+                                body: JSON.stringify({
+                                    action: "broadcast",
+                                    emails: emailList,
+                                    subject: "TENDER BARU: " + document.getElementById('tenderName').value,
+                                    body: `Yth Bapak/Ibu, Tender baru telah dibuka: ${document.getElementById('tenderName').value}. Silakan cek portal dan kirim penawaran.`
+                                })
+                            });
+                        }
+                        alert("Tender berhasil dipublikasikan & broadcast terkirim!"); 
+                        e.target.reset(); 
+                        loadTenders();
+                    }
+                } catch (err) { alert("Error: " + err.message); } 
+                finally { btn.disabled = false; btn.innerText = originalText; }
+            };
+        });
+
+        window.loadTenders = async function() {
+            const tbody = document.querySelector('#tendersTable tbody');
+            const selectDropdown = document.getElementById('propTenderSelect'); // Untuk form penawaran
+            
+            const q = query(collection(db, "tenders"), orderBy("createdAt", "desc"));
+            const snap = await getDocs(q);
+            
+            tbody.innerHTML = '';
+            selectDropdown.innerHTML = '<option value="">-- Pilih Tender --</option>'; // Reset dropdown
+            
+            let id = 1;
+            
+            snap.forEach(docSnap => {
+                const d = docSnap.data();
+                const isExpired = new Date().toISOString().split('T')[0] > d.deadline;
+                
+                // 1. Populate Table
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="ps-4 small text-muted">${id++}</td>
+                        <td>
+                            <div class="fw-bold">${d.name}</div>
+                            <div class="small text-muted">${d.desc}</div>
+                        </td>
+                        <td><div class="small fw-semibold"><i class="far fa-calendar-alt me-1"></i>${d.deadline}</div></td>
+                        <td><span class="badge-status ${isExpired ? 'status-closed' : 'status-open'}">${isExpired ? 'CLOSED' : 'ACTIVE'}</span></td>
+                        <td class="text-center pe-4">
+                            <a href="${d.fileUrl}" target="_blank" class="btn btn-outline-danger btn-sm rounded-pill px-3 shadow-sm">
+                                <i class="fas fa-file-pdf me-1"></i> RKS
+                            </a>
+                            ${currentUser ? `<button onclick="deleteTender('${docSnap.id}')" class="btn btn-light btn-sm ms-2 rounded-circle text-danger"><i class="fas fa-trash"></i></button>` : ''}
+                        </td>
+                    </tr>`;
+
+                // 2. Populate Dropdown (Hanya tender yang belum expired)
+                if (!isExpired) {
+                    selectDropdown.innerHTML += `<option value="${docSnap.id}">${d.name} (Batas: ${d.deadline})</option>`;
+                }
+            });
+
+            if(selectDropdown.options.length === 1) {
+                selectDropdown.innerHTML = '<option value="">-- Tidak ada tender aktif saat ini --</option>';
+            }
+        };
+
+        window.deleteTender = async (id) => { 
+            if(confirm("Hapus pengumuman tender ini?")) { await deleteDoc(doc(db, "tenders", id)); loadTenders(); }
+        };
+
+        /* ==============================================================
+           FUNGSI VENDOR CRUD & PDF (LOGIKA ASLI DIPERTAHANKAN)
+           ============================================================== */
         window.loadVendors = async function() {
             const tbody = document.querySelector('#vendorsTable tbody');
             const snap = await getDocs(collection(db, "pendaftar"));
@@ -572,182 +855,28 @@
             });
         };
 
-        window.toggleVerify = async (id, status) => {
-            await updateDoc(doc(db, "pendaftar", id), { verified: !status });
-            loadVendors();
-        };
-
+        window.toggleVerify = async (id, status) => { await updateDoc(doc(db, "pendaftar", id), { verified: !status }); loadVendors(); };
         window.openEditVendor = (id, data) => {
-            document.getElementById('editVendorId').value = id;
-            document.getElementById('editRegNama').value = data.namaPerusahaan;
-            document.getElementById('editRegEmail').value = data.email;
-            document.getElementById('editRegWA').value = data.whatsapp;
-            document.getElementById('editRegUsaha').value = data.bidangUsaha;
-            new bootstrap.Modal(document.getElementById('editVendorModal')).show();
+            document.getElementById('editVendorId').value = id; document.getElementById('editRegNama').value = data.namaPerusahaan; document.getElementById('editRegEmail').value = data.email; document.getElementById('editRegWA').value = data.whatsapp; document.getElementById('editRegUsaha').value = data.bidangUsaha; new bootstrap.Modal(document.getElementById('editVendorModal')).show();
         };
-
         document.getElementById('editVendorForm').onsubmit = async (e) => {
-            e.preventDefault();
-            await updateDoc(doc(db, "pendaftar", document.getElementById('editVendorId').value), {
-                namaPerusahaan: document.getElementById('editRegNama').value,
-                email: document.getElementById('editRegEmail').value,
-                whatsapp: document.getElementById('editRegWA').value,
-                bidangUsaha: document.getElementById('editRegUsaha').value
-            });
-            bootstrap.Modal.getInstance(document.getElementById('editVendorModal')).hide();
-            loadVendors();
+            e.preventDefault(); await updateDoc(doc(db, "pendaftar", document.getElementById('editVendorId').value), { namaPerusahaan: document.getElementById('editRegNama').value, email: document.getElementById('editRegEmail').value, whatsapp: document.getElementById('editRegWA').value, bidangUsaha: document.getElementById('editRegUsaha').value }); bootstrap.Modal.getInstance(document.getElementById('editVendorModal')).hide(); loadVendors();
         };
-
-        window.deleteVendor = async (id) => {
-            if(confirm("Apakah Anda yakin ingin menghapus data vendor ini?")) {
-                await deleteDoc(doc(db, "pendaftar", id));
-                loadVendors();
-            }
-        };
-
-        /* FUNGSI TENDER & BROADCAST (LOGIKA ASLI)
-        */
-        document.getElementById('addTenderForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btnAddTender');
-            const file = document.getElementById('tenderFile').files[0];
-            const originalText = btn.innerText;
-
-            btn.disabled = true; 
-            btn.innerText = "Processing File...";
-
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = async () => {
-                const base64 = reader.result.split(',')[1];
-                try {
-                    const response = await fetch(GDRIVE_SCRIPT_URL, { 
-                        method: "POST", 
-                        body: JSON.stringify({ 
-                            action: "upload", 
-                            base64: base64, 
-                            type: file.type, 
-                            name: file.name 
-                        }) 
-                    });
-                    const result = await response.json();
-
-                    if(result.status === "success") {
-                        await addDoc(collection(db, "tenders"), {
-                            name: document.getElementById('tenderName').value,
-                            desc: document.getElementById('tenderDesc').value,
-                            deadline: document.getElementById('tenderDeadline').value,
-                            fileUrl: result.link,
-                            createdAt: new Date().toISOString()
-                        });
-
-                        const vendorSnap = await getDocs(collection(db, "pendaftar"));
-                        let emailList = [];
-                        vendorSnap.forEach(doc => { 
-                            if(doc.data().email && doc.data().email !== "-") emailList.push(doc.data().email); 
-                        });
-
-                        if (emailList.length > 0) {
-                            await fetch(GDRIVE_SCRIPT_URL, {
-                                method: "POST",
-                                body: JSON.stringify({
-                                    action: "broadcast",
-                                    emails: emailList,
-                                    subject: "TENDER BARU: " + document.getElementById('tenderName').value,
-                                    body: `Yth Bapak/Ibu, Tender baru telah dibuka: ${document.getElementById('tenderName').value}. Silakan cek portal.`
-                                })
-                            });
-                        }
-                        alert("Tender berhasil dipublikasikan & broadcast terkirim!"); 
-                        e.target.reset(); 
-                        loadTenders();
-                    }
-                } catch (err) { 
-                    alert("Error: " + err.message); 
-                } finally { 
-                    btn.disabled = false; 
-                    btn.innerText = originalText; 
-                }
-            };
-        });
-
-        window.loadTenders = async function() {
-            const tbody = document.querySelector('#tendersTable tbody');
-            const q = query(collection(db, "tenders"), orderBy("createdAt", "desc"));
-            const snap = await getDocs(q);
-            tbody.innerHTML = '';
-            let id = 1;
-            
-            snap.forEach(docSnap => {
-                const d = docSnap.data();
-                const isExpired = new Date().toISOString().split('T')[0] > d.deadline;
-                tbody.innerHTML += `
-                    <tr>
-                        <td class="ps-4 small text-muted">${id++}</td>
-                        <td>
-                            <div class="fw-bold">${d.name}</div>
-                            <div class="small text-muted">${d.desc}</div>
-                        </td>
-                        <td><div class="small fw-semibold"><i class="far fa-calendar-alt me-1"></i>${d.deadline}</div></td>
-                        <td><span class="badge-status ${isExpired ? 'status-closed' : 'status-open'}">${isExpired ? 'CLOSED' : 'ACTIVE'}</span></td>
-                        <td class="text-center pe-4">
-                            <a href="${d.fileUrl}" target="_blank" class="btn btn-outline-danger btn-sm rounded-pill px-3 shadow-sm">
-                                <i class="fas fa-file-pdf me-1"></i> RKS
-                            </a>
-                            ${currentUser ? `<button onclick="deleteTender('${docSnap.id}')" class="btn btn-light btn-sm ms-2 rounded-circle text-danger"><i class="fas fa-trash"></i></button>` : ''}
-                        </td>
-                    </tr>`;
-            });
-        };
-
-        window.deleteTender = async (id) => { 
-            if(confirm("Hapus pengumuman tender ini?")) { 
-                await deleteDoc(doc(db, "tenders", id)); 
-                loadTenders(); 
-            }
-        };
+        window.deleteVendor = async (id) => { if(confirm("Hapus data vendor ini?")) { await deleteDoc(doc(db, "pendaftar", id)); loadVendors(); } };
 
         window.downloadVendorPDF = () => {
-            const { jsPDF } = window.jspdf;
-            const docPdf = new jsPDF('l', 'mm', 'a4');
-            docPdf.setFontSize(18);
-            docPdf.text("DATA REKANAN TERDAFTAR - PT BIS", 14, 20);
-            docPdf.autoTable({ 
-                html: '#vendorsTable', 
-                startY: 30,
-                theme: 'grid',
-                headStyles: { fillColor: [15, 23, 42] }
-            });
+            const { jsPDF } = window.jspdf; const docPdf = new jsPDF('l', 'mm', 'a4'); docPdf.setFontSize(18); docPdf.text("DATA REKANAN TERDAFTAR - PT BIS", 14, 20);
+            docPdf.autoTable({ html: '#vendorsTable', startY: 30, theme: 'grid', headStyles: { fillColor: [15, 23, 42] } });
             docPdf.save("Laporan_Vendor_BIS.pdf");
         };
 
-        /* LOGIN & REGISTRASI EVENT HANDLERS
-        */
+        /* LOGIN & REGISTRASI EVENT HANDLERS */
         document.getElementById('loginForm').onsubmit = async (e) => {
-            e.preventDefault();
-            try {
-                await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);
-                bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
-            } catch (err) {
-                alert("Login gagal: " + err.message);
-            }
+            e.preventDefault(); try { await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide(); } catch (err) { alert("Login gagal: " + err.message); }
         };
-
         document.getElementById('registerForm').onsubmit = async (e) => {
-            e.preventDefault();
-            await addDoc(collection(db, "pendaftar"), {
-                namaPerusahaan: document.getElementById('regNama').value,
-                email: document.getElementById('regEmail').value,
-                whatsapp: document.getElementById('regWA').value,
-                bidangUsaha: document.getElementById('regUsaha').value,
-                alamat: document.getElementById('regAlamat').value,
-                verified: false,
-                tanggalDaftar: new Date().toISOString()
-            });
-            alert("Pendaftaran berhasil! Perusahaan Anda telah masuk database kami."); 
-            e.target.reset();
+            e.preventDefault(); await addDoc(collection(db, "pendaftar"), { namaPerusahaan: document.getElementById('regNama').value, email: document.getElementById('regEmail').value, whatsapp: document.getElementById('regWA').value, bidangUsaha: document.getElementById('regUsaha').value, alamat: document.getElementById('regAlamat').value, verified: false, tanggalDaftar: new Date().toISOString() }); alert("Pendaftaran berhasil!"); e.target.reset();
         };
-
         document.getElementById('logoutBtn').onclick = () => signOut(auth);
         document.getElementById('loginBtn').onclick = () => new bootstrap.Modal(document.getElementById('loginModal')).show();
     </script>
