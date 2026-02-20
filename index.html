@@ -25,11 +25,11 @@
             --border-color: #1a1a1c;         /* Garis batas gelap */
             
             --gold-main: #c5a059;            /* Emas Utama */
-            --gold-bright: #e8cd8a;          /* Emas Terang (Hover) */
+            --gold-bright: #e8cd8a;          /* Emas Terang (Nomor & Hover) */
             --gold-dark: #8e6d31;            /* Emas Gelap (Gradient) */
             
             --text-light: #f8f9fa;           /* Teks Putih Terang */
-            --text-muted: #a0a0a0;           /* Teks Abu-abu (Deskripsi) */
+            --text-muted: #cccccc;           /* Teks Abu-abu (Ditingkatkan kontras agar terlihat jelas) */
             
             --success-color: #00ffc2;        /* Hijau Neon (Status Buka) */
             --danger-color: #ff3c3c;         /* Merah Neon (Status Tutup) */
@@ -202,7 +202,7 @@
         }
 
         /* =====================================================================
-           7. FORM INPUT & PENCARIAN (FIX KONTRAS)
+           7. FORM INPUT & PENCARIAN (PERBAIKAN KONTRAST)
            ===================================================================== */
         .form-label {
             color: var(--gold-main);
@@ -214,9 +214,9 @@
         }
 
         .form-control, .form-select, .input-group-text {
-            background-color: #111111 !important;
-            border: 1px solid var(--border-color) !important;
-            color: var(--text-light) !important;
+            background-color: #1a1a1c !important;
+            border: 1px solid #333333 !important;
+            color: #ffffff !important;
             padding: 14px 20px;
             border-radius: 4px !important;
             font-size: 0.95rem;
@@ -225,14 +225,15 @@
         .form-control:focus, .form-select:focus {
             border-color: var(--gold-main) !important;
             box-shadow: 0 0 15px rgba(197, 160, 89, 0.1) !important;
+            background-color: #222224 !important;
         }
 
         .form-control::placeholder {
-            color: #555555 !important;
+            color: #888888 !important; /* Placeholder lebih terang agar terlihat */
         }
 
         /* =====================================================================
-           8. TABEL DATA
+           8. TABEL DATA (DENGAN NOMOR BERWARNA)
            ===================================================================== */
         .table-custom {
             color: var(--text-light);
@@ -258,6 +259,15 @@
 
         .table-custom tbody tr:hover td {
             background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Styling Kolom Nomor */
+        .table-number {
+            color: var(--gold-bright); /* Warna Emas Terang */
+            font-weight: 800;
+            font-size: 1.1rem;
+            text-align: center;
+            display: block;
         }
 
         /* Badge Status Tender */
@@ -357,15 +367,8 @@
             <h1 class="hero-title">INTEGRITAS & PRESISI</h1>
             <p class="hero-desc">
                 Selamat datang di portal pengadaan resmi PT Bidakara Indah Sejahtera. 
-                Kami mengedepankan proses tata kelola yang transparan, profesional, dan berbasis teknologi untuk menemukan mitra terbaik.
-            </p>
-            <div class="d-flex justify-content-center gap-4 mt-5">
-                <a href="#tenders" class="btn btn-gold">Lihat Tender Aktif</a>
-                <a href="#register" class="btn btn-outline-gold">Daftar Sebagai Mitra</a>
-            </div>
-        </div>
-    </section>
-
+                Kami mengedepankan proses tata kelola
+                
     <section id="tenders" class="py-5 mt-5">
         <div class="container py-5">
             <div class="section-header">
