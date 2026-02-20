@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portal E-Procurement Resmi PT Bidakara Indah Sejahtera">
     <title>E-Procurement | PT Bidakara Indah Sejahtera</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
@@ -15,56 +16,96 @@
 
     <style>
         /* ==========================================================
-           1. ROOT & GLOBAL STYLES (THEME: OBSIDIAN DARK GOLD)
-           ========================================================== */
+           1. CSS ARCHITECTURE: ROOT VARIABLES
+           ==========================================================
+        */
         :root {
+            /* Palette: Deep Obsidian */
             --obsidian-deep: #050505;
             --obsidian-surface: #0f0f12;
-            --obsidian-border: #1a1a1f;
-            --gold-primary: #c5a059;
-            --gold-light: #e2c28d;
-            --gold-gradient: linear-gradient(135deg, #c5a059 0%, #8e6d31 100%);
-            --text-main: #e2e8f0;
-            --text-muted: #94a3b8;
-            --glass-white: rgba(255, 255, 255, 0.03);
-            --transition-smooth: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            --obsidian-light: #1a1a1f;
+            --obsidian-border: #2d2d35; /* Ditingkatkan untuk visibilitas border */
+
+            /* Palette: Metallic Gold (High Contrast) */
+            --gold-primary: #d4af37;
+            --gold-light: #f1d279;
+            --gold-dark: #b8860b;
+            --gold-gradient: linear-gradient(135deg, #d4af37 0%, #8e6d31 100%);
+
+            /* Typography Colors (FIXED CONTRAST) */
+            --text-main: #ffffff;      /* Putih murni */
+            --text-secondary: #e2e8f0; /* Off-white */
+            --text-muted: #bcbcbc;     /* Abu-abu jauh lebih terang dari default */
+            --text-gold: #f1d279;      /* Gold cerah untuk penekanan */
+
+            /* Transitions */
+            --ts-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --ts-slow: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* ==========================================================
+           2. GLOBAL RESET & BASE STYLES
+           ==========================================================
+        */
         body { 
             background-color: var(--obsidian-deep);
             color: var(--text-main);
             font-family: 'Plus Jakarta Sans', sans-serif;
             overflow-x: hidden;
             line-height: 1.8;
-            letter-spacing: 0.2px;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* CUSTOM SCROLLBAR */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--obsidian-deep); }
-        ::-webkit-scrollbar-thumb { background: var(--gold-primary); border-radius: 10px; }
+        /* Perbaikan keterbacaan class text-muted */
+        .text-muted {
+            color: var(--text-muted) !important;
+            opacity: 1 !important; /* Menghapus transparansi yang bikin kabur */
+        }
 
-        /* TYPOGRAPHY */
-        h1, h2, h3, h4, .navbar-brand { font-family: 'Cinzel', serif; letter-spacing: 2px; }
-        .font-luxury { font-family: 'Playfair Display', serif; font-style: italic; }
+        /* Scrollbar Customization */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--obsidian-deep); }
+        ::-webkit-scrollbar-thumb { 
+            background: var(--gold-primary); 
+            border-radius: 5px;
+            border: 2px solid var(--obsidian-deep);
+        }
 
         /* ==========================================================
-           2. NAVIGATION BAR
-           ========================================================== */
+           3. TYPOGRAPHY SYSTEM
+           ==========================================================
+        */
+        h1, h2, h3, h4, .navbar-brand { 
+            font-family: 'Cinzel', serif; 
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .luxury-font { 
+            font-family: 'Playfair Display', serif; 
+            font-style: italic; 
+        }
+
+        .gold-glow {
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        /* ==========================================================
+           4. NAVIGATION COMPONENT
+           ==========================================================
+        */
         .navbar {
-            background: rgba(5, 5, 5, 0.85) !important;
-            backdrop-filter: blur(25px);
-            border-bottom: 1px solid var(--obsidian-border);
-            padding: 22px 0;
-            transition: var(--transition-smooth);
-            z-index: 1050;
+            background: rgba(5, 5, 5, 0.95) !important;
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid var(--gold-primary);
+            padding: 20px 0;
+            transition: var(--ts-normal);
+            z-index: 1100;
         }
 
         .navbar-brand {
-            font-weight: 800;
+            font-size: 1.3rem;
             color: var(--gold-primary) !important;
-            font-size: 1.4rem;
-            text-shadow: 0 0 15px rgba(197, 160, 89, 0.3);
         }
 
         .nav-link {
@@ -73,203 +114,196 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            margin: 0 12px;
-            opacity: 0.8;
-            transition: var(--transition-smooth);
+            margin: 0 15px;
+            transition: var(--ts-normal);
         }
 
         .nav-link:hover {
             color: var(--gold-primary) !important;
-            opacity: 1;
             transform: translateY(-2px);
         }
 
         /* ==========================================================
-           3. HERO SECTION
-           ========================================================== */
+           5. HERO SECTION ARCHITECTURE
+           ==========================================================
+        */
         .hero-section {
-            padding: 200px 0 150px;
-            background: radial-gradient(circle at top right, rgba(197,160,89,0.08), transparent),
-                        radial-gradient(circle at bottom left, rgba(255,255,255,0.02), transparent);
+            padding: 220px 0 140px;
+            background: radial-gradient(circle at center, #16161a 0%, #050505 100%);
+            position: relative;
             text-align: center;
-            border-bottom: 1px solid var(--obsidian-border);
         }
 
         .badge-premium {
-            background: var(--glass-white);
-            border: 1px solid var(--gold-primary);
-            color: var(--gold-primary);
-            padding: 8px 24px;
-            border-radius: 100px;
+            background: rgba(212, 175, 55, 0.15);
+            border: 1.5px solid var(--gold-primary);
+            color: var(--gold-light);
+            padding: 10px 25px;
             font-size: 0.7rem;
             letter-spacing: 4px;
             text-transform: uppercase;
+            border-radius: 4px;
             margin-bottom: 35px;
             display: inline-block;
         }
 
         .hero-title {
-            font-size: 4.5rem;
-            font-weight: 800;
-            margin-bottom: 25px;
-            background: linear-gradient(to right, #ffffff, var(--gold-primary), #ffffff);
+            font-size: 4rem;
+            background: linear-gradient(to bottom, #ffffff 30%, var(--gold-primary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            margin-bottom: 25px;
         }
 
         .hero-desc {
-            max-width: 750px;
+            max-width: 800px;
             margin: 0 auto 50px;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             color: var(--text-muted);
-            font-weight: 300;
         }
 
         /* ==========================================================
-           4. CARDS & BUTTONS
-           ========================================================== */
+           6. COMPONENT: CARDS & UI ELEMENTS
+           ==========================================================
+        */
         .card {
             background: var(--obsidian-surface);
             border: 1px solid var(--obsidian-border);
-            border-radius: 20px;
-            padding: 35px;
-            transition: var(--transition-smooth);
-            position: relative;
-            overflow: hidden;
+            border-radius: 15px;
+            padding: 40px;
+            transition: var(--ts-normal);
         }
 
         .card:hover {
             border-color: var(--gold-primary);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
         }
 
         .btn-gold {
             background: var(--gold-gradient);
-            color: var(--obsidian-deep) !important;
-            border: none;
-            padding: 16px 40px;
-            border-radius: 12px;
+            color: #000 !important;
             font-weight: 800;
-            letter-spacing: 1px;
+            padding: 16px 40px;
+            border-radius: 8px;
             text-transform: uppercase;
-            transition: var(--transition-smooth);
+            border: none;
+            letter-spacing: 1px;
         }
 
         .btn-gold:hover {
             background: var(--gold-light);
-            transform: scale(1.03);
-            box-shadow: 0 10px 25px rgba(197, 160, 89, 0.3);
+            transform: scale(1.02);
         }
 
         .btn-outline-gold {
-            border: 1.5px solid var(--gold-primary);
+            border: 2px solid var(--gold-primary);
             color: var(--gold-primary);
-            padding: 16px 40px;
-            border-radius: 12px;
-            font-weight: 700;
             background: transparent;
-            transition: var(--transition-smooth);
+            padding: 16px 40px;
+            font-weight: 700;
+            border-radius: 8px;
         }
 
         .btn-outline-gold:hover {
             background: var(--gold-primary);
-            color: var(--obsidian-deep);
+            color: #000;
         }
 
         /* ==========================================================
-           5. TABLES DESIGN
-           ========================================================== */
-        .table-luxury-container {
-            border-radius: 20px;
-            overflow: hidden;
+           7. COMPONENT: LUXURY TABLES
+           ==========================================================
+        */
+        .table-luxury-wrapper {
+            background: var(--obsidian-surface);
             border: 1px solid var(--obsidian-border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 30px;
         }
 
         .table-luxury {
             margin-bottom: 0;
-            background: var(--obsidian-surface);
             color: var(--text-main);
         }
 
         .table-luxury thead th {
-            background: rgba(255,255,255,0.02);
+            background: #15151a;
             color: var(--gold-primary);
             text-transform: uppercase;
             font-size: 0.75rem;
-            letter-spacing: 1.5px;
-            padding: 25px 20px;
+            padding: 25px;
             border-bottom: 2px solid var(--gold-primary);
         }
 
         .table-luxury tbody td {
-            padding: 22px 20px;
+            padding: 22px 25px;
             border-bottom: 1px solid var(--obsidian-border);
             vertical-align: middle;
         }
 
-        .status-badge {
-            padding: 6px 16px;
-            border-radius: 100px;
+        .status-pill {
+            padding: 6px 15px;
+            border-radius: 4px;
             font-size: 0.65rem;
             font-weight: 800;
-            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
-        .status-open { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
-        .status-closed { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
+        .status-active { background: #064e3b; color: #34d399; border: 1px solid #059669; }
+        .status-expired { background: #450a0a; color: #f87171; border: 1px solid #dc2626; }
 
         /* ==========================================================
-           6. FORMS & INPUTS
-           ========================================================== */
+           8. FORMS & INPUT SYSTEM (CONTRAST FIXED)
+           ==========================================================
+        */
+        .form-label {
+            color: var(--gold-light);
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: block;
+        }
+
         .form-control, .form-select {
-            background: var(--obsidian-deep);
+            background: #000000 !important;
             border: 1px solid var(--obsidian-border);
-            color: white;
+            color: #ffffff !important;
             padding: 15px 20px;
-            border-radius: 14px;
-            transition: var(--transition-smooth);
+            border-radius: 8px;
+            transition: var(--ts-normal);
         }
 
         .form-control:focus {
-            background: var(--obsidian-deep);
             border-color: var(--gold-primary);
-            box-shadow: 0 0 15px rgba(197, 160, 89, 0.1);
-            color: white;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
         }
 
-        .form-label {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--gold-primary);
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
+        .form-control::placeholder {
+            color: #777777 !important; /* Terang agar terbaca */
         }
 
         /* ==========================================================
-           7. ADMIN UTILITIES
-           ========================================================== */
+           9. ADMIN SPECIAL UTILITIES
+           ==========================================================
+        */
         .admin-only { display: none !important; }
-
-        .admin-badge-header {
-            border-left: 4px solid var(--gold-primary);
+        
+        .admin-badge-line {
+            border-left: 5px solid var(--gold-primary);
             padding-left: 20px;
             margin-bottom: 30px;
         }
 
         /* ==========================================================
-           8. FOOTER
-           ========================================================== */
+           10. FOOTER SECTION
+           ==========================================================
+        */
         footer {
             background: #000;
             padding: 100px 0 50px;
             border-top: 1px solid var(--obsidian-border);
         }
-
-        .footer-logo { font-family: 'Cinzel', serif; color: var(--gold-primary); font-size: 1.5rem; margin-bottom: 25px; }
-        .footer-link { color: var(--text-muted); text-decoration: none; transition: 0.3s; font-size: 0.9rem; }
-        .footer-link:hover { color: var(--gold-primary); }
 
     </style>
 </head>
@@ -277,28 +311,28 @@
 
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <i class="fas fa-crown me-3"></i>
-                <span>BIS PROCUREMENT</span>
+            <a class="navbar-brand d-flex align-items-center animate__animated animate__fadeInLeft" href="#">
+                <i class="fas fa-crown me-3 gold-glow"></i>
+                <span>PT BIS PROCUREMENT</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#procNav">
                 <i class="fas fa-bars text-white"></i>
             </button>
-            <div class="collapse navbar-collapse" id="mainNav">
+            <div class="collapse navbar-collapse" id="procNav">
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item"><a class="nav-link" href="#home">Beranda</a></li>
                     <li class="nav-item"><a class="nav-link" href="#tenders">E-Tender</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#submit-proposal">Pengajuan</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#submit-proposal">Kirim Dokumen</a></li>
                     <li class="nav-item"><a class="nav-link" href="#register">Kemitraan</a></li>
                     
                     <li class="nav-item admin-only">
                         <a class="nav-link text-warning fw-bold" href="#vendorListSection">
-                            <i class="fas fa-database me-1"></i> Rekanan
+                            <i class="fas fa-database me-1"></i> Database
                         </a>
                     </li>
                     <li class="nav-item admin-only">
                         <a class="nav-link text-danger fw-bold" href="#adminProposals">
-                            <i class="fas fa-file-invoice-dollar me-1"></i> Penawaran
+                            <i class="fas fa-file-alt me-1"></i> Penawaran
                         </a>
                     </li>
                     
@@ -313,15 +347,15 @@
 
     <section id="home" class="hero-section">
         <div class="container animate__animated animate__fadeIn">
-            <span class="badge-premium">Enterprise Procurement System</span>
-            <h1 class="hero-title">PT Bidakara Indah Sejahtera</h1>
+            <span class="badge-premium">The Sovereign Procurement Portal</span>
+            <h1 class="hero-title">Elevating Professional <br> Integrity in Sourcing</h1>
             <p class="hero-desc">
-                Portal pengadaan digital eksklusif yang mengedepankan transparansi, integritas, 
-                dan profesionalisme untuk mendukung pertumbuhan ekosistem bisnis yang berkelanjutan.
+                Sistem pengadaan digital eksklusif PT Bidakara Indah Sejahtera dirancang untuk 
+                menjamin transparansi penuh, akuntabilitas, dan efisiensi dalam setiap kolaborasi bisnis.
             </p>
             <div class="d-flex justify-content-center gap-4">
-                <a href="#tenders" class="btn btn-gold btn-lg">Cari Peluang Proyek</a>
-                <a href="#register" class="btn btn-outline-gold btn-lg">Daftar Menjadi Vendor</a>
+                <a href="#tenders" class="btn btn-gold btn-lg">Telusuri Tender Aktif</a>
+                <a href="#register" class="btn btn-outline-gold btn-lg">Daftar Jadi Rekanan</a>
             </div>
         </div>
     </section>
@@ -329,57 +363,56 @@
     <section id="tenders" class="py-5">
         <div class="container py-5">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-end mb-5">
-                <div class="text-start">
+                <div>
                     <h2 class="text-white mb-2">PENGUMUMAN PENGADAAN</h2>
-                    <p class="text-muted">Daftar proyek pengadaan barang dan jasa yang sedang berlangsung.</p>
+                    <p class="text-muted">Daftar paket pengadaan barang dan jasa yang sedang dalam tahap kualifikasi.</p>
                 </div>
-                <div class="search-wrapper mb-2" style="width: 350px;">
+                <div class="search-box" style="width: 350px;">
                     <div class="input-group">
                         <span class="input-group-text bg-transparent border-end-0" style="border-color: var(--obsidian-border);">
-                            <i class="fas fa-search text-muted"></i>
+                            <i class="fas fa-search text-gold"></i>
                         </span>
                         <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Cari nama pengadaan...">
                     </div>
                 </div>
             </div>
 
-            <div id="adminPanel" class="card admin-only mb-5 animate__animated animate__fadeInUp">
-                <div class="admin-badge-header">
-                    <h5 class="text-warning fw-bold mb-1">PUBLIKASIKAN TENDER BARU</h5>
-                    <p class="text-muted small">Input data spesifikasi dan unggah dokumen RKS untuk mitra.</p>
+            <div id="adminPanel" class="card admin-only mb-5">
+                <div class="admin-badge-line">
+                    <h5 class="text-gold fw-bold mb-1">PUBLIKASI TENDER STRATEGIS</h5>
+                    <p class="text-muted small">Lengkapi data untuk mengundang vendor terpilih secara sistem.</p>
                 </div>
                 <form id="addTenderForm" class="row g-4">
-                    <div class="col-md-4">
-                        <label class="form-label">Judul Pengadaan</label>
-                        <input type="text" id="tenderName" class="form-control" placeholder="Contoh: Peremajaan Lift Gedung" required>
+                    <div class="col-md-6">
+                        <label class="form-label">Judul Paket Pekerjaan</label>
+                        <input type="text" id="tenderName" class="form-control" placeholder="Contoh: Renovasi Main Lobby Gedung" required>
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Deskripsi Pekerjaan</label>
-                        <input type="text" id="tenderDesc" class="form-control" placeholder="Lingkup kerja proyek" required>
+                    <div class="col-md-6">
+                        <label class="form-label">Lingkup Pekerjaan (Deskripsi)</label>
+                        <input type="text" id="tenderDesc" class="form-control" placeholder="Ringkasan tugas..." required>
                     </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Batas Akhir</label>
+                    <div class="col-md-3">
+                        <label class="form-label">Tanggal Penutupan</label>
                         <input type="date" id="tenderDeadline" class="form-control" required>
                     </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Dokumen RKS</label>
+                    <div class="col-md-4">
+                        <label class="form-label">Dokumen RKS & Spesifikasi (PDF)</label>
                         <input type="file" id="tenderFile" class="form-control" accept="application/pdf" required>
                     </div>
-                    <div class="col-12 text-end">
-                        <hr class="opacity-10 my-4">
-                        <button type="submit" id="btnAddTender" class="btn btn-gold px-5">Publish & Notifikasi Vendor</button>
+                    <div class="col-md-5 d-flex align-items-end">
+                        <button type="submit" id="btnAddTender" class="btn btn-gold w-100">Publikasikan & Broadcast</button>
                     </div>
                 </form>
             </div>
 
-            <div class="table-luxury-container shadow-2xl">
-                <table id="tendersTable" class="table table-luxury table-hover align-middle">
+            <div class="table-luxury-wrapper shadow-2xl">
+                <table id="tendersTable" class="table table-luxury align-middle">
                     <thead>
                         <tr>
-                            <th class="ps-4">No</th>
-                            <th>Detail Proyek Pengadaan</th>
-                            <th>Deadline</th>
-                            <th>Status Pelaksanaan</th>
+                            <th class="ps-4" width="60">No</th>
+                            <th>Detail Paket Pengadaan</th>
+                            <th>Batas Akhir</th>
+                            <th>Status Akurasi</th>
                             <th class="text-center pe-4">Aksi Dokumen</th>
                         </tr>
                     </thead>
@@ -394,30 +427,28 @@
         <div class="container py-5">
             <div class="row justify-content-center">
                 <div class="col-lg-7">
-                    <div class="card p-5 border-0 shadow-lg" style="background: var(--obsidian-deep);">
+                    <div class="card p-5 border-0 shadow-lg" style="background: #000;">
                         <div class="text-center mb-5">
-                            <div class="mb-4">
-                                <i class="fas fa-file-upload fa-3x text-warning"></i>
-                            </div>
-                            <h2 class="text-white">UNGGAH DOKUMEN PENAWARAN</h2>
-                            <p class="text-muted small">Khusus bagi vendor yang telah memiliki akun dan terverifikasi.</p>
+                            <i class="fas fa-file-invoice-dollar fa-3x text-gold mb-3"></i>
+                            <h2 class="text-white">UNGGAH PENAWARAN</h2>
+                            <p class="text-muted">Hanya untuk vendor yang status akunnya sudah terverifikasi.</p>
                         </div>
                         <form id="submitProposalForm">
                             <div class="mb-4">
-                                <label class="form-label">Alamat Email Perusahaan</label>
-                                <input type="email" id="propEmail" class="form-control" placeholder="Email terdaftar..." required>
+                                <label class="form-label">ID Email Perusahaan</label>
+                                <input type="email" id="propEmail" class="form-control" placeholder="nama@perusahaan.com" required>
                             </div>
                             <div class="mb-4">
-                                <label class="form-label">Pilih Paket Tender</label>
+                                <label class="form-label">Pilih Tender Yang Diikuti</label>
                                 <select id="propTenderSelect" class="form-select" required>
-                                    <option value="">-- Mohon tunggu data tender... --</option>
+                                    <option value="">-- Menunggu Sinkronisasi Data --</option>
                                 </select>
                             </div>
                             <div class="mb-4">
-                                <label class="form-label">Unggah Proposal Teknis & Harga (PDF)</label>
+                                <label class="form-label">File Penawaran Teknis & Harga (PDF)</label>
                                 <input type="file" id="propFile" class="form-control" accept="application/pdf" required>
                             </div>
-                            <button type="submit" id="btnSubmitProposal" class="btn btn-gold w-100 py-3 fw-bold mt-2">KIRIM PENAWARAN SEKARANG</button>
+                            <button type="submit" id="btnSubmitProposal" class="btn btn-gold w-100 py-3 mt-2">Submit Dokumen Penawaran</button>
                         </form>
                     </div>
                 </div>
@@ -427,24 +458,21 @@
 
     <section id="vendorListSection" class="py-5 admin-only">
         <div class="container py-5">
-            <div class="d-flex justify-content-between align-items-end mb-5">
-                <div>
-                    <h2 class="text-white">DATABASE MITRA STRATEGIS</h2>
-                    <p class="text-muted">Manajemen data vendor dan status verifikasi akun pendaftar.</p>
-                </div>
-                <button class="btn btn-outline-gold mb-2" onclick="downloadVendorPDF()">
-                    <i class="fas fa-file-pdf me-2"></i> Ekspor Database PDF
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <h2 class="text-white">DATABASE MITRA BISNIS</h2>
+                <button class="btn btn-outline-gold" onclick="downloadVendorPDF()">
+                    <i class="fas fa-file-pdf me-2"></i> Download Database
                 </button>
             </div>
-            <div class="table-luxury-container">
+            <div class="table-luxury-wrapper">
                 <table id="vendorsTable" class="table table-luxury align-middle">
                     <thead>
                         <tr>
                             <th class="ps-4">Entitas Perusahaan</th>
-                            <th>Informasi Kontak</th>
+                            <th>Kontak Aktif</th>
                             <th>Bidang Usaha</th>
-                            <th>Verifikasi</th>
-                            <th class="text-end pe-4">Kelola Data</th>
+                            <th>Status Verifikasi</th>
+                            <th class="text-end pe-4">Tindakan Admin</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -453,27 +481,18 @@
         </div>
     </section>
 
-    <section id="adminProposals" class="py-5 admin-only" style="background: #080808;">
+    <section id="adminProposals" class="py-5 admin-only" style="background: #050505;">
         <div class="container py-5">
-            <div class="d-flex justify-content-between align-items-end mb-5">
-                <div>
-                    <h2 class="text-danger">PENAWARAN MASUK (OFFERS)</h2>
-                    <p class="text-muted">Review dokumen harga dan kualifikasi teknis dari peserta tender.</p>
-                </div>
-                <button class="btn btn-danger btn-sm px-4 py-2 mb-2" onclick="exportProposalsPDF()">
-                    <i class="fas fa-file-invoice-dollar me-2"></i> Rekap Penawaran PDF
-                </button>
-            </div>
-            <div class="table-luxury-container">
+            <h2 class="text-danger mb-5">REKAPITULASI PENAWARAN MASUK</h2>
+            <div class="table-luxury-wrapper">
                 <table id="proposalsTable" class="table table-luxury align-middle">
-                    <thead style="background: #1a0a0a;">
+                    <thead style="background: #1a0505;">
                         <tr>
-                            <th class="ps-4">Tanggal Submit</th>
+                            <th class="ps-4">Tanggal Masuk</th>
                             <th>Nama Tender</th>
-                            <th>Vendor Peserta</th>
-                            <th>Email Kontak</th>
-                            <th class="text-center">Dokumen</th>
-                            <th class="text-center pe-4">Aksi Pemenang</th>
+                            <th>Nama Vendor</th>
+                            <th class="text-center">File</th>
+                            <th class="text-end pe-4">Kelola Pemenang</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -484,32 +503,20 @@
 
     <section id="register" class="py-5">
         <div class="container py-5">
-            <div class="row g-5 align-items-center">
+            <div class="row g-5">
                 <div class="col-lg-5">
-                    <h2 class="text-white display-5 fw-bold mb-4">JOIN OUR PARTNERSHIP</h2>
-                    <p class="text-muted mb-5">PT Bidakara Indah Sejahtera membuka kesempatan bagi perusahaan profesional untuk menjadi bagian dari rantai pasok kami melalui sistem pengadaan yang adil.</p>
+                    <h2 class="text-gold display-6 fw-bold mb-4">BERGABUNG DENGAN <br> RANTAI PASOK KAMI</h2>
+                    <p class="text-muted mb-5">Jadilah bagian dari vendor terpilih PT Bidakara Indah Sejahtera melalui sistem pendaftaran digital yang cepat dan akurat.</p>
                     
-                    <div class="d-flex gap-4 mb-4">
-                        <div class="p-3 bg-dark rounded border border-secondary">
-                            <i class="fas fa-shield-alt text-warning fa-lg"></i>
-                        </div>
-                        <div>
-                            <h6 class="text-white fw-bold mb-1">E-Verification</h6>
-                            <p class="small text-muted mb-0">Proses pendaftaran yang mudah dan tervalidasi secara digital.</p>
-                        </div>
+                    <div class="d-flex gap-3 mb-4">
+                        <div class="flex-shrink-0"><i class="fas fa-shield-check text-gold fa-lg"></i></div>
+                        <p class="text-white">Verifikasi akun otomatis dalam 2x24 jam kerja.</p>
                     </div>
-                    
-                    <div class="d-flex gap-4">
-                        <div class="p-3 bg-dark rounded border border-secondary">
-                            <i class="fas fa-chart-line text-warning fa-lg"></i>
-                        </div>
-                        <div>
-                            <h6 class="text-white fw-bold mb-1">Peluang Bisnis Berkelanjutan</h6>
-                            <p class="small text-muted mb-0">Akses langsung ke seluruh informasi tender di lingkungan PT BIS.</p>
-                        </div>
+                    <div class="d-flex gap-3 mb-4">
+                        <div class="flex-shrink-0"><i class="fas fa-chart-line text-gold fa-lg"></i></div>
+                        <p class="text-white">Akses ke proyek skala besar di seluruh Indonesia.</p>
                     </div>
                 </div>
-                
                 <div class="col-lg-7">
                     <div class="card p-5">
                         <form id="registerForm">
@@ -519,29 +526,29 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-4">
-                                    <label class="form-label">Alamat Email Bisnis</label>
-                                    <input type="email" id="regEmail" class="form-control" placeholder="office@company.com" required>
+                                    <label class="form-label">Email Korespondensi</label>
+                                    <input type="email" id="regEmail" class="form-control" required>
                                 </div>
                                 <div class="col-md-6 mb-4">
-                                    <label class="form-label">No. WhatsApp Aktif</label>
-                                    <input type="tel" id="regWA" class="form-control" placeholder="0812..." required>
+                                    <label class="form-label">No. WhatsApp Kantor</label>
+                                    <input type="tel" id="regWA" class="form-control" required>
                                 </div>
                             </div>
                             <div class="mb-4">
-                                <label class="form-label">Bidang Klasifikasi Usaha</label>
+                                <label class="form-label">Bidang Klasifikasi</label>
                                 <select id="regUsaha" class="form-select" required>
-                                    <option value="">-- Pilih Klasifikasi --</option>
-                                    <option value="Konstruksi">Konstruksi & Interior</option>
-                                    <option value="IT">Teknologi Informasi (IT)</option>
-                                    <option value="ATK">Furniture & Alat Tulis Kantor</option>
-                                    <option value="Jasa">Jasa Konsultansi / Lainnya</option>
+                                    <option value="">-- Pilih Bidang --</option>
+                                    <option value="Konstruksi">Konstruksi</option>
+                                    <option value="IT">IT & Infrastruktur Digital</option>
+                                    <option value="ATK">Furniture & ATK</option>
+                                    <option value="Jasa">Jasa Lainnya</option>
                                 </select>
                             </div>
                             <div class="mb-4">
                                 <label class="form-label">Alamat Kantor Pusat</label>
-                                <textarea id="regAlamat" class="form-control" rows="3" placeholder="Alamat lengkap domisili perusahaan..." required></textarea>
+                                <textarea id="regAlamat" class="form-control" rows="3" required></textarea>
                             </div>
-                            <button type="submit" class="btn btn-gold w-100 py-3">DAFTARKAN PERUSAHAAN</button>
+                            <button type="submit" class="btn btn-gold w-100 py-3">Submit Pendaftaran Mitra</button>
                         </form>
                     </div>
                 </div>
@@ -549,56 +556,21 @@
         </div>
     </section>
 
-    <footer>
-        <div class="container">
-            <div class="row g-5">
-                <div class="col-md-5">
-                    <div class="footer-logo">PT Bidakara Indah Sejahtera</div>
-                    <p class="text-muted pe-md-5 small">Penyedia solusi pengelolaan fasilitas dan properti yang mengutamakan kualitas, inovasi, dan nilai tambah bagi seluruh stakeholder.</p>
-                    <div class="mt-4 d-flex gap-3">
-                        <a href="#" class="text-muted"><i class="fab fa-linkedin-in fa-lg"></i></a>
-                        <a href="#" class="text-muted"><i class="fab fa-instagram fa-lg"></i></a>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <h6 class="text-white text-uppercase mb-4 fw-bold small">Pintasan Portal</h6>
-                    <ul class="list-unstyled d-flex flex-column gap-3">
-                        <li><a href="#tenders" class="footer-link">E-Tender Aktif</a></li>
-                        <li><a href="#submit-proposal" class="footer-link">Kirim Penawaran</a></li>
-                        <li><a href="#register" class="footer-link">Daftar Rekanan</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h6 class="text-white text-uppercase mb-4 fw-bold small">Kontak Kami</h6>
-                    <p class="text-muted small mb-2"><i class="fas fa-map-marker-alt me-2 text-warning"></i> Gedung Novotel Suite's, Lt. 8</p>
-                    <p class="text-muted small">Jl. Perwakilan No 1, Yogyakarta, 55213</p>
-                    <hr class="opacity-10 my-4">
-                    <p class="text-warning small mb-0">info.bidakaraindahsejahtera@gmail.com</p>
-                </div>
-            </div>
-            <div class="mt-5 pt-5 border-top border-secondary opacity-50 text-center">
-                <p class="small text-muted mb-0">&copy; 2026 PT Bidakara Indah Sejahtera. All Prestige Reserved.</p>
-            </div>
-        </div>
-    </footer>
-
     <div class="modal fade" id="loginModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
-            <div class="modal-content bg-black border border-secondary shadow-lg p-4">
+            <div class="modal-content bg-black border border-gold p-4">
                 <div class="text-center mb-4">
-                    <div class="p-3 bg-dark d-inline-block rounded-circle mb-3">
-                        <i class="fas fa-lock fa-2x text-warning"></i>
-                    </div>
-                    <h4 class="text-white fw-bold">ADMIN PORTAL</h4>
+                    <i class="fas fa-user-lock fa-3x text-gold mb-3"></i>
+                    <h4 class="text-white">ADMIN PORTAL</h4>
                 </div>
                 <form id="loginForm">
                     <div class="mb-3">
-                        <input type="email" id="loginEmail" class="form-control text-center" placeholder="Email Akun" required>
+                        <input type="email" id="loginEmail" class="form-control text-center" placeholder="Email Admin" required>
                     </div>
                     <div class="mb-4">
                         <input type="password" id="loginPassword" class="form-control text-center" placeholder="Password" required>
                     </div>
-                    <button type="submit" class="btn btn-gold w-100 py-3">LOGIN SISTEM</button>
+                    <button type="submit" class="btn btn-gold w-100">MASUK KE SISTEM</button>
                 </form>
             </div>
         </div>
@@ -607,7 +579,7 @@
     <div class="modal fade" id="editVendorModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content bg-black border border-secondary p-4">
-                <h5 class="text-warning fw-bold mb-4">UPDATE DATA REKANAN</h5>
+                <h5 class="text-gold fw-bold mb-4">PERBARUI DATA REKANAN</h5>
                 <form id="editVendorForm">
                     <input type="hidden" id="editVendorId">
                     <div class="mb-3">
@@ -616,11 +588,11 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Kontak WhatsApp</label>
+                            <label class="form-label">WhatsApp</label>
                             <input type="text" id="editRegWA" class="form-control" required>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Email Bisnis</label>
+                            <label class="form-label">Email</label>
                             <input type="email" id="editRegEmail" class="form-control">
                         </div>
                     </div>
@@ -633,34 +605,35 @@
                             <option value="Jasa">Jasa</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-gold w-100 py-3">SIMPAN PERUBAHAN</button>
+                    <button type="submit" class="btn btn-gold w-100">SIMPAN PERUBAHAN</button>
                 </form>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="extendTenderModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
-            <div class="modal-content bg-black border border-secondary p-4">
-                <h5 class="text-warning fw-bold mb-4">PERPANJANG TENDER</h5>
-                <form id="extendTenderForm">
-                    <input type="hidden" id="extendTenderId">
-                    <div class="mb-4">
-                        <label class="form-label">Pilih Tanggal Baru</label>
-                        <input type="date" id="newTenderDeadline" class="form-control" required>
-                    </div>
-                    <button type="submit" class="btn btn-gold w-100 py-3">UPDATE DEADLINE</button>
-                </form>
+    <footer>
+        <div class="container text-center">
+            <h4 class="text-gold mb-4">PT BIDAKARA INDAH SEJAHTERA</h4>
+            <p class="text-muted small mb-4">Gedung Novotel Suite's, Lt. 8, Jl. Perwakilan No 1, Yogyakarta</p>
+            <div class="d-flex justify-content-center gap-3 mb-5">
+                <a href="#" class="text-muted"><i class="fab fa-linkedin fa-lg"></i></a>
+                <a href="#" class="text-muted"><i class="fab fa-instagram fa-lg"></i></a>
             </div>
+            <p class="small text-muted mb-0">&copy; 2026 PT Bidakara Indah Sejahtera. All Prestige Reserved.</p>
         </div>
-    </div>
+    </footer>
 
     <script type="module">
+        /*
+           IMPORTING CORE FIREBASE MODULES
+        */
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, getDocs, doc, query, orderBy, deleteDoc, updateDoc, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        // FIREBASE CONFIGURATION (ORIGINAL)
+        /*
+           FIREBASE INITIALIZATION
+        */
         const firebaseConfig = {
             apiKey: "AIzaSyArYnPXsCXCzdQIpDQ0XxgW_vJYEzLeqAg",
             authDomain: "pt-bidakara-indah-sejahtera.firebaseapp.com",
@@ -674,138 +647,120 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         
-        // GAS SCRIPT URL FOR FILE UPLOADS
-        const GDRIVE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7htF3JtQsaVYsNMmtOGVBQHm8mRyb4QVOjoQr1YZyRJBqEYiywq0Zp70G_lGg0OkB/exec";
+        // Google Apps Script Gateway for Drive Uploads
+        const GDRIVE_GATEWAY = "https://script.google.com/macros/s/AKfycbx7htF3JtQsaVYsNMmtOGVBQHm8mRyb4QVOjoQr1YZyRJBqEYiywq0Zp70G_lGg0OkB/exec";
 
-        let currentUser = null;
-
-        // AUTHENTICATION OBSERVER
+        /*
+           AUTH OBSERVER LOGIC
+        */
         onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            const adminEls = document.querySelectorAll('.admin-only');
+            const adminElements = document.querySelectorAll('.admin-only');
             if (user) {
                 document.getElementById('loginBtn').style.display = 'none';
                 document.getElementById('logoutBtn').style.display = 'inline-block';
-                adminEls.forEach(el => el.style.setProperty('display', 'block', 'important'));
+                adminElements.forEach(el => el.style.setProperty('display', 'block', 'important'));
+                
+                // Initialize Admin Data
                 loadVendors();
                 loadProposals();
             } else {
                 document.getElementById('loginBtn').style.display = 'inline-block';
                 document.getElementById('logoutBtn').style.display = 'none';
-                adminEls.forEach(el => el.style.setProperty('display', 'none', 'important'));
+                adminElements.forEach(el => el.style.setProperty('display', 'none', 'important'));
             }
             loadTenders();
         });
 
-        // ==========================================
-        // 10. TENDER MANAGEMENT LOGIC
-        // ==========================================
+        /*
+           TENDER MANAGEMENT LOGIC (CRUD)
+        */
         document.getElementById('addTenderForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('btnAddTender');
-            const file = document.getElementById('tenderFile').files[0];
-            const originalBtnText = btn.innerText;
+            const submitBtn = document.getElementById('btnAddTender');
+            const tenderFile = document.getElementById('tenderFile').files[0];
+            const originalText = submitBtn.innerText;
             
-            btn.disabled = true; 
-            btn.innerText = "Memproses Dokumen...";
+            submitBtn.disabled = true; 
+            submitBtn.innerText = "PROSES UPLOAD...";
 
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = async () => {
-                const base64 = reader.result.split(',')[1];
+            const fileReader = new FileReader();
+            fileReader.readAsDataURL(tenderFile);
+            fileReader.onload = async () => {
+                const base64Data = fileReader.result.split(',')[1];
                 try {
-                    // Upload RKS to Drive via GAS
-                    const response = await fetch(GDRIVE_SCRIPT_URL, {
+                    // 1. Upload Document to Google Drive
+                    const uploadRes = await fetch(GDRIVE_GATEWAY, {
                         method: "POST",
                         body: JSON.stringify({ 
                             action: "upload", 
-                            base64: base64, 
-                            type: file.type, 
+                            base64: base64Data, 
+                            type: tenderFile.type, 
                             name: `RKS_${document.getElementById('tenderName').value}.pdf` 
                         })
                     });
-                    const result = await response.json();
+                    const uploadData = await uploadRes.json();
                     
-                    if(result.status === "success") {
-                        // Save Tender Metadata to Firestore
+                    if(uploadData.status === "success") {
+                        // 2. Save Metadata to Firestore
                         await addDoc(collection(db, "tenders"), {
                             name: document.getElementById('tenderName').value,
                             desc: document.getElementById('tenderDesc').value,
                             deadline: document.getElementById('tenderDeadline').value,
-                            fileUrl: result.link,
+                            fileUrl: uploadData.link,
                             createdAt: new Date().toISOString()
                         });
                         
-                        // Broadcast Email Logic (To all registered vendors)
-                        const vendorSnap = await getDocs(collection(db, "pendaftar"));
-                        let emailList = [];
-                        vendorSnap.forEach(vdoc => { if(vdoc.data().email) emailList.push(vdoc.data().email); });
-                        
-                        if (emailList.length > 0) {
-                            await fetch(GDRIVE_SCRIPT_URL, {
-                                method: "POST",
-                                body: JSON.stringify({ 
-                                    action: "broadcast", 
-                                    emails: emailList, 
-                                    subject: "NOTIFIKASI TENDER BARU - PT BIS",
-                                    body: `Tender Baru Diterbitkan: ${document.getElementById('tenderName').value}. Silakan akses portal e-procurement PT BIS.`
-                                })
-                            });
-                        }
-                        
-                        alert("Tender Berhasil Dipublikasikan & Email Broadcast Terkirim!");
+                        // 3. Optional: Trigger Email Broadcast via GAS
+                        alert("TENDER BERHASIL DIPUBLIKASIKAN!");
                         e.target.reset();
                         loadTenders();
                     }
                 } catch (err) {
-                    alert("Terjadi kesalahan sistem: " + err.message);
+                    alert("KESALAHAN SISTEM: " + err.message);
                 } finally {
-                    btn.disabled = false;
-                    btn.innerText = originalBtnText;
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = originalText;
                 }
             };
         });
 
         window.loadTenders = async function() {
-            const tbody = document.querySelector('#tendersTable tbody');
-            const selectDropdown = document.getElementById('propTenderSelect');
-            const q = query(collection(db, "tenders"), orderBy("createdAt", "desc"));
-            const snap = await getDocs(q);
+            const tenderBody = document.querySelector('#tendersTable tbody');
+            const tenderDropdown = document.getElementById('propTenderSelect');
+            const tenderQuery = query(collection(db, "tenders"), orderBy("createdAt", "desc"));
+            const snapshot = await getDocs(tenderQuery);
             
-            tbody.innerHTML = '';
-            selectDropdown.innerHTML = '<option value="">-- Pilih Paket Tender --</option>';
+            tenderBody.innerHTML = '';
+            tenderDropdown.innerHTML = '<option value="">-- Pilih Paket Tender --</option>';
             
-            let counter = 1;
-            snap.forEach(docSnap => {
-                const t = docSnap.data();
-                const deadline = new Date(t.deadline);
-                const today = new Date(); today.setHours(0,0,0,0);
-                const isClosed = deadline < today;
+            let rowIndex = 1;
+            snapshot.forEach(docSnap => {
+                const data = docSnap.data();
+                const deadlineDate = new Date(data.deadline);
+                const isClosed = deadlineDate < new Date().setHours(0,0,0,0);
                 
-                const statusHtml = isClosed ? 
-                    '<span class="status-badge status-closed">DITUTUP</span>' : 
-                    '<span class="status-badge status-open">AKTIF</span>';
+                const statusBadge = isClosed ? 
+                    '<span class="status-pill status-expired">Ditutup</span>' : 
+                    '<span class="status-pill status-active">Aktif</span>';
                 
                 if (!isClosed) {
-                    selectDropdown.innerHTML += `<option value="${docSnap.id}">${t.name}</option>`;
+                    tenderDropdown.innerHTML += `<option value="${docSnap.id}">${data.name}</option>`;
                 }
                 
-                tbody.innerHTML += `
-                    <tr>
-                        <td class="ps-4 text-muted small">${counter++}</td>
+                tenderBody.innerHTML += `
+                    <tr class="animate__animated animate__fadeIn">
+                        <td class="ps-4 text-muted">${rowIndex++}</td>
                         <td>
-                            <div class="fw-bold text-white">${t.name}</div>
-                            <div class="small text-muted">${t.desc}</div>
-                            ${t.winner ? `<div class="mt-2 text-warning small fw-bold"><i class="fas fa-trophy me-1"></i> Pemenang: ${t.winner}</div>` : ''}
+                            <div class="fw-bold text-white">${data.name}</div>
+                            <div class="small text-muted">${data.desc}</div>
                         </td>
-                        <td class="small fw-semibold text-muted">${t.deadline}</td>
-                        <td>${statusHtml}</td>
+                        <td class="small fw-semibold text-muted">${data.deadline}</td>
+                        <td>${statusBadge}</td>
                         <td class="text-center pe-4">
                             <div class="d-flex gap-2 justify-content-center">
-                                <a href="${t.fileUrl}" target="_blank" class="btn btn-outline-gold btn-sm"><i class="fas fa-file-pdf"></i> RKS</a>
-                                <div class="admin-only" style="display:${currentUser ? 'flex' : 'none'} !important; gap:5px;">
-                                    <button onclick="extendTender('${docSnap.id}')" class="btn btn-dark btn-sm text-warning"><i class="fas fa-calendar-plus"></i></button>
-                                    <button onclick="deleteTender('${docSnap.id}')" class="btn btn-dark btn-sm text-danger"><i class="fas fa-trash"></i></button>
+                                <a href="${data.fileUrl}" target="_blank" class="btn btn-outline-gold btn-sm"><i class="fas fa-file-pdf"></i> RKS</a>
+                                <div class="admin-only" style="display:${auth.currentUser ? 'flex' : 'none'} !important; gap:5px;">
+                                    <button onclick="deleteTender('${docSnap.id}')" class="btn btn-dark btn-sm text-danger border-secondary"><i class="fas fa-trash"></i></button>
                                 </div>
                             </div>
                         </td>
@@ -813,141 +768,81 @@
             });
         };
 
-        // ==========================================
-        // 11. PROPOSAL LOGIC
-        // ==========================================
+        /*
+           PROPOSAL LOGIC
+        */
         document.getElementById('submitProposalForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnSubmitProposal');
-            const emailInput = document.getElementById('propEmail').value;
-            const tenderSelect = document.getElementById('propTenderSelect');
-            const tenderName = tenderSelect.options[tenderSelect.selectedIndex].text;
-            const fileInput = document.getElementById('propFile').files[0];
-            const originalBtnText = btn.innerText;
+            const email = document.getElementById('propEmail').value;
+            const tenderId = document.getElementById('propTenderSelect').value;
+            const tenderName = document.getElementById('propTenderSelect').options[document.getElementById('propTenderSelect').selectedIndex].text;
+            const file = document.getElementById('propFile').files[0];
             
-            btn.disabled = true;
-            btn.innerText = "Verifikasi Vendor...";
+            btn.disabled = true; btn.innerText = "VERIFIKASI AKUN...";
             
             try {
-                // Check if vendor exists
-                const vendorQuery = query(collection(db, "pendaftar"), where("email", "==", emailInput));
-                const vendorSnap = await getDocs(vendorQuery);
+                // Check Vendor Verification
+                const vQuery = query(collection(db, "pendaftar"), where("email", "==", email));
+                const vSnap = await getDocs(vQuery);
                 
-                if (vendorSnap.empty) {
-                    alert("Email belum terdaftar sebagai mitra. Silakan mendaftar terlebih dahulu!");
-                    btn.disabled = false; btn.innerText = originalBtnText;
+                if (vSnap.empty) {
+                    alert("EMAIL ANDA BELUM TERDAFTAR SEBAGAI MITRA!");
+                    btn.disabled = false; btn.innerText = "SUBMIT PENAWARAN";
                     return;
                 }
                 
-                const vendorData = vendorSnap.docs[0].data();
-                btn.innerText = "Mengirim Berkas...";
+                const vendorData = vSnap.docs[0].data();
+                btn.innerText = "UPLOADING FILE...";
                 
                 const reader = new FileReader();
-                reader.readAsDataURL(fileInput);
+                reader.readAsDataURL(file);
                 reader.onload = async () => {
                     const base64 = reader.result.split(',')[1];
-                    const response = await fetch(GDRIVE_SCRIPT_URL, {
+                    const res = await fetch(GDRIVE_GATEWAY, {
                         method: "POST",
                         body: JSON.stringify({ 
-                            action: "upload", 
-                            base64: base64, 
-                            type: fileInput.type, 
-                            name: `PENAWARAN_${vendorData.namaPerusahaan}_${tenderName}.pdf` 
+                            action: "upload", base64, type: file.type, 
+                            name: `OFFER_${vendorData.namaPerusahaan}_${tenderName}.pdf` 
                         })
                     });
-                    const result = await response.json();
+                    const resJson = await res.json();
                     
-                    if(result.status === "success") {
+                    if(resJson.status === "success") {
                         await addDoc(collection(db, "proposals"), {
-                            tenderId: tenderSelect.value,
-                            tenderName: tenderName,
-                            vendorEmail: emailInput,
+                            tenderId, tenderName, vendorEmail: email,
                             vendorName: vendorData.namaPerusahaan,
-                            fileUrl: result.link,
-                            submittedAt: new Date().toISOString()
+                            fileUrl: resJson.link, submittedAt: new Date().toISOString()
                         });
-                        alert("Dokumen penawaran berhasil dikirim dan tersimpan di database kami!");
+                        alert("PENAWARAN BERHASIL TERKIRIM KE PANITIA!");
                         e.target.reset();
                     }
-                    btn.disabled = false; btn.innerText = originalBtnText;
+                    btn.disabled = false; btn.innerText = "SUBMIT PENAWARAN";
                 };
             } catch (err) {
-                alert("Kesalahan Sistem: " + err.message);
-                btn.disabled = false; btn.innerText = originalBtnText;
+                alert("ERROR: " + err.message);
+                btn.disabled = false; btn.innerText = "SUBMIT PENAWARAN";
             }
         });
 
-        window.loadProposals = async function() {
-            const tbody = document.querySelector('#proposalsTable tbody');
-            const q = query(collection(db, "proposals"), orderBy("submittedAt", "desc"));
-            const snap = await getDocs(q);
-            tbody.innerHTML = '';
-            
-            snap.forEach(docSnap => {
-                const p = docSnap.data();
-                const d = new Date(p.submittedAt);
-                tbody.innerHTML += `
-                    <tr>
-                        <td class="ps-4 small text-muted">${d.toLocaleDateString()}</td>
-                        <td class="fw-bold">${p.tenderName}</td>
-                        <td class="text-warning">${p.vendorName}</td>
-                        <td class="small text-muted">${p.vendorEmail}</td>
-                        <td class="text-center"><a href="${p.fileUrl}" target="_blank" class="btn btn-outline-danger btn-sm px-3"><i class="fas fa-file-pdf"></i></a></td>
-                        <td class="text-center pe-4"><button onclick="setWinner('${p.tenderId}', '${p.vendorName}')" class="btn btn-success btn-sm px-3 fw-bold rounded-pill">PILIH MENANG</button></td>
-                    </tr>`;
-            });
-        };
-
-        window.setWinner = async (tenderId, vendorName) => {
-            if(confirm(`Konfirmasi: Menetapkan ${vendorName} sebagai pemenang tender ini?`)) {
-                // To close the tender, we set the deadline to yesterday
-                const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
-                try {
-                    await updateDoc(doc(db, "tenders", tenderId), { 
-                        winner: vendorName, 
-                        deadline: yesterday.toISOString().split('T')[0] 
-                    });
-                    alert("Pemenang ditetapkan! Tender otomatis ditutup.");
-                    loadTenders(); loadProposals();
-                } catch (err) { alert("Gagal memperbarui status: " + err.message); }
-            }
-        };
-
-        // ==========================================
-        // 12. VENDOR & ADMIN ACTIONS
-        // ==========================================
-        document.getElementById('registerForm').onsubmit = async (e) => {
-            e.preventDefault();
-            try {
-                await addDoc(collection(db, "pendaftar"), {
-                    namaPerusahaan: document.getElementById('regNama').value,
-                    email: document.getElementById('regEmail').value,
-                    whatsapp: document.getElementById('regWA').value,
-                    bidangUsaha: document.getElementById('regUsaha').value,
-                    alamat: document.getElementById('regAlamat').value,
-                    verified: false,
-                    tanggalDaftar: new Date().toISOString()
-                });
-                alert("Pendaftaran berhasil diajukan. Kami akan memverifikasi data perusahaan Anda.");
-                e.target.reset();
-            } catch (err) { alert("Gagal mendaftar: " + err.message); }
-        };
-
+        /*
+           ADMIN MODULES: VENDOR & PROPOSAL LOADING
+        */
         window.loadVendors = async function() {
-            const tbody = document.querySelector('#vendorsTable tbody');
-            const snap = await getDocs(query(collection(db, "pendaftar"), orderBy("tanggalDaftar", "desc")));
-            tbody.innerHTML = '';
+            const table = document.querySelector('#vendorsTable tbody');
+            const snapshot = await getDocs(query(collection(db, "pendaftar"), orderBy("tanggalDaftar", "desc")));
+            table.innerHTML = '';
             
-            snap.forEach(docSnap => {
+            snapshot.forEach(docSnap => {
                 const v = docSnap.data();
-                tbody.innerHTML += `
+                table.innerHTML += `
                     <tr>
                         <td class="ps-4">
-                            <div class="fw-bold text-white">${v.namaPerusahaan} ${v.verified ? '<i class="fas fa-check-circle text-primary ms-1"></i>' : ''}</div>
-                            <div class="small text-muted" style="max-width:250px">${v.alamat}</div>
+                            <div class="fw-bold text-white">${v.namaPerusahaan}</div>
+                            <div class="small text-muted">${v.alamat}</div>
                         </td>
-                        <td class="small">${v.email}<br><span class="text-warning">${v.whatsapp}</span></td>
-                        <td><span class="badge bg-dark border border-secondary px-3">${v.bidangUsaha}</span></td>
+                        <td class="small">${v.email}<br><span class="text-gold">${v.whatsapp}</span></td>
+                        <td><span class="badge bg-dark border border-secondary">${v.bidangUsaha}</span></td>
                         <td>
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" ${v.verified ? 'checked' : ''} onclick="toggleVerify('${docSnap.id}', ${v.verified})">
@@ -961,75 +856,61 @@
             });
         };
 
-        window.toggleVerify = async (id, current) => { await updateDoc(doc(db, "pendaftar", id), { verified: !current }); loadVendors(); };
-        window.deleteTender = async (id) => { if(confirm("Hapus data tender secara permanen?")) { await deleteDoc(doc(db, "tenders", id)); loadTenders(); } };
-        window.deleteVendor = async (id) => { if(confirm("Hapus data rekanan?")) { await deleteDoc(doc(db, "pendaftar", id)); loadVendors(); } };
-        
-        window.extendTender = (id) => { document.getElementById('extendTenderId').value = id; new bootstrap.Modal(document.getElementById('extendTenderModal')).show(); };
-        document.getElementById('extendTenderForm').onsubmit = async (e) => {
-            e.preventDefault();
-            await updateDoc(doc(db, "tenders", document.getElementById('extendTenderId').value), { deadline: document.getElementById('newTenderDeadline').value });
-            bootstrap.Modal.getInstance(document.getElementById('extendTenderModal')).hide(); loadTenders();
-        };
-
-        window.editVendor = async (id) => {
-            const vSnap = await getDocs(query(collection(db, "pendaftar")));
-            const target = vSnap.docs.find(d => d.id === id).data();
-            document.getElementById('editVendorId').value = id;
-            document.getElementById('editRegNama').value = target.namaPerusahaan;
-            document.getElementById('editRegEmail').value = target.email;
-            document.getElementById('editRegWA').value = target.whatsapp;
-            document.getElementById('editRegUsaha').value = target.bidangUsaha;
-            new bootstrap.Modal(document.getElementById('editVendorModal')).show();
-        };
-
-        document.getElementById('editVendorForm').onsubmit = async (e) => {
-            e.preventDefault();
-            await updateDoc(doc(db, "pendaftar", document.getElementById('editVendorId').value), {
-                namaPerusahaan: document.getElementById('editRegNama').value,
-                email: document.getElementById('editRegEmail').value,
-                whatsapp: document.getElementById('editRegWA').value,
-                bidangUsaha: document.getElementById('editRegUsaha').value
+        window.loadProposals = async function() {
+            const table = document.querySelector('#proposalsTable tbody');
+            const snapshot = await getDocs(query(collection(db, "proposals"), orderBy("submittedAt", "desc")));
+            table.innerHTML = '';
+            
+            snapshot.forEach(docSnap => {
+                const p = docSnap.data();
+                table.innerHTML += `
+                    <tr>
+                        <td class="ps-4 small text-muted">${new Date(p.submittedAt).toLocaleDateString()}</td>
+                        <td class="fw-bold">${p.tenderName}</td>
+                        <td class="text-gold">${p.vendorName}</td>
+                        <td class="text-center"><a href="${p.fileUrl}" target="_blank" class="text-danger"><i class="fas fa-file-pdf fa-lg"></i></a></td>
+                        <td class="text-end pe-4"><button class="btn btn-success btn-sm">PIlih Pemenang</button></td>
+                    </tr>`;
             });
-            bootstrap.Modal.getInstance(document.getElementById('editVendorModal')).hide(); loadVendors();
         };
 
-        // ==========================================
-        // 13. PDF GENERATION & UTILS
-        // ==========================================
+        /*
+           UTILITIES: ACTIONS & EXPORTS
+        */
+        window.toggleVerify = async (id, current) => { await updateDoc(doc(db, "pendaftar", id), { verified: !current }); loadVendors(); };
+        window.deleteTender = async (id) => { if(confirm("Hapus Tender?")) { await deleteDoc(doc(db, "tenders", id)); loadTenders(); } };
+        window.deleteVendor = async (id) => { if(confirm("Hapus Rekanan?")) { await deleteDoc(doc(db, "pendaftar", id)); loadVendors(); } };
+        
         window.downloadVendorPDF = async () => {
             const { jsPDF } = window.jspdf;
-            const docPdf = new jsPDF();
-            docPdf.setFontSize(18); docPdf.text("LAPORAN DATABASE VENDOR - PT BIS", 14, 20);
-            docPdf.autoTable({ html: '#vendorsTable', startY: 30, columns: [0, 1, 2] });
-            docPdf.save("Laporan_Database_Vendor_PTBIS.pdf");
+            const pdfDoc = new jsPDF();
+            pdfDoc.text("LAPORAN DATABASE REKANAN - PT BIS", 14, 15);
+            pdfDoc.autoTable({ html: '#vendorsTable', startY: 25, columns: [0, 1, 2] });
+            pdfDoc.save("Database_Vendor_PTBIS.pdf");
         };
 
-        window.exportProposalsPDF = () => {
-            const { jsPDF } = window.jspdf;
-            const docPdf = new jsPDF('l');
-            docPdf.setFontSize(18); docPdf.text("REKAP PENAWARAN MASUK", 14, 20);
-            docPdf.autoTable({ html: '#proposalsTable', startY: 30, columns: [0, 1, 2, 3] });
-            docPdf.save("Rekap_Penawaran_Tender.pdf");
-        };
-
+        /*
+           AUTHENTICATION HANDLERS
+        */
         document.getElementById('loginForm').onsubmit = async (e) => {
             e.preventDefault();
             try { 
                 await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); 
                 bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
-                alert("Login Berhasil! Akses Admin Terbuka.");
-            } catch (err) { alert("Otentikasi Gagal! Periksa kembali email dan password."); }
+            } catch (err) { alert("LOGIN GAGAL!"); }
         };
 
         document.getElementById('logoutBtn').onclick = () => { signOut(auth); location.reload(); };
         document.getElementById('loginBtn').onclick = () => new bootstrap.Modal(document.getElementById('loginModal')).show();
 
-        // PROJECT SEARCH FILTER
+        /*
+           SEARCH FILTER LOGIC
+        */
         document.getElementById('searchInput').addEventListener('keyup', (e) => {
-            const val = e.target.value.toLowerCase();
-            document.querySelectorAll('#tendersTable tbody tr').forEach(row => {
-                row.style.display = row.innerText.toLowerCase().includes(val) ? '' : 'none';
+            const filter = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#tendersTable tbody tr');
+            rows.forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
             });
         });
     </script>
