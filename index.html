@@ -13,10 +13,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
     <style>
-        /* ========================================
-           ROOT VARIABLES & GLOBAL STYLES
-           ========================================
-        */
         :root {
             --primary-color: #0f172a; 
             --accent-color: #2563eb;  
@@ -33,10 +29,6 @@
             line-height: 1.6;
         }
 
-        /* ========================================
-           NAVBAR STYLING
-           ========================================
-        */
         .navbar {
             background: var(--glass) !important;
             backdrop-filter: blur(10px);
@@ -62,10 +54,6 @@
             color: var(--accent-color) !important;
         }
 
-        /* ========================================
-           HERO SECTION
-           ========================================
-        */
         .hero { 
             background: radial-gradient(circle at top right, #1e293b, #0f172a);
             color: white; 
@@ -94,10 +82,6 @@
             margin-bottom: 25px;
         }
 
-        /* ========================================
-           CARD & UI ELEMENTS
-           ========================================
-        */
         .card { 
             border: none;
             border-radius: 20px; 
@@ -128,10 +112,6 @@
             transform: translateY(-2px);
         }
 
-        /* ========================================
-           STATUS BADGES & UTILITIES
-           ========================================
-        */
         .badge-status {
             padding: 8px 16px;
             border-radius: 10px;
@@ -173,14 +153,18 @@
             box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
         }
 
-        /* ========================================
-           FOOTER STYLING
-           ========================================
-        */
         footer { 
             background: #0f172a;
             color: #94a3b8; 
             padding-top: 80px;
+        }
+
+        /* STYLE TAMBAHAN UNTUK FITUR PEMENANG */
+        .winner-badge {
+            color: #f59e0b;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -373,9 +357,14 @@
 
     <section id="adminProposals" class="py-5 admin-only" style="background: #f8fafc;">
         <div class="container py-5">
-            <div class="mb-5 border-start border-4 border-danger ps-3">
-                <h2 class="fw-bold text-danger mb-1">Dokumen Penawaran Masuk</h2>
-                <p class="text-muted small">Daftar proposal harga dan teknis yang dikirimkan oleh vendor.</p>
+            <div class="d-flex justify-content-between align-items-center mb-5 border-start border-4 border-danger ps-3">
+                <div>
+                    <h2 class="fw-bold text-danger mb-1">Dokumen Penawaran Masuk</h2>
+                    <p class="text-muted small">Daftar proposal harga dan teknis yang dikirimkan oleh vendor.</p>
+                </div>
+                <button class="btn btn-danger fw-bold px-4 rounded-pill shadow" onclick="exportProposalsPDF()">
+                    <i class="fas fa-file-pdf me-2"></i> Ekspor Rekap Penawaran
+                </button>
             </div>
             <div class="card shadow-sm border-0">
                 <div class="table-responsive">
@@ -386,8 +375,8 @@
                                 <th>Tender Tujuan</th>
                                 <th>Nama Vendor</th>
                                 <th>Email</th>
-                                <th class="text-center pe-4">Dokumen</th>
-                            </tr>
+                                <th class="text-center">Dokumen</th>
+                                <th class="text-center pe-4">Aksi Pemenang</th> </tr>
                         </thead>
                         <tbody>
                             </tbody>
@@ -595,7 +584,6 @@
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, getDocs, doc, query, orderBy, deleteDoc, updateDoc, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        // CONFIGURASI FIREBASE ASLI
         const firebaseConfig = {
             apiKey: "AIzaSyArYnPXsCXCzdQIpDQ0XxgW_vJYEzLeqAg", 
             authDomain: "pt-bidakara-indah-sejahtera.firebaseapp.com",
@@ -611,11 +599,9 @@
         const GDRIVE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7htF3JtQsaVYsNMmtOGVBQHm8mRyb4QVOjoQr1YZyRJBqEYiywq0Zp70G_lGg0OkB/exec";
         let currentUser = null;
 
-        /* AUTH STATE LISTENER */
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             const adminEls = document.querySelectorAll('.admin-only');
-            
             if (user) {
                 document.getElementById('loginBtn').style.display = 'none';
                 document.getElementById('logoutBtn').style.display = 'inline-block';
@@ -648,7 +634,6 @@
             try {
                 const vendorQuery = query(collection(db, "pendaftar"), where("email", "==", emailInput));
                 const vendorSnap = await getDocs(vendorQuery);
-                
                 if (vendorSnap.empty) {
                     alert("Email tidak ditemukan! Pastikan Anda sudah mendaftar sebagai penyedia/vendor terlebih dahulu.");
                     btn.disabled = false;
@@ -700,7 +685,7 @@
         });
 
         /* ==============================================================
-           FUNGSI: LOAD PROPOSAL UNTUK ADMIN
+           FUNGSI: LOAD PROPOSAL UNTUK ADMIN (DENGAN FITUR PEMENANG)
            ============================================================== */
         window.loadProposals = async function() {
             const tbody = document.querySelector('#proposalsTable tbody');
@@ -718,27 +703,71 @@
                         <td class="fw-bold text-dark">${p.tenderName}</td>
                         <td class="fw-semibold text-primary">${p.vendorName}</td>
                         <td class="small text-muted">${p.vendorEmail}</td>
-                        <td class="text-center pe-4">
+                        <td class="text-center">
                             <a href="${p.fileUrl}" target="_blank" class="btn btn-outline-danger btn-sm rounded-pill px-3 shadow-sm">
-                                <i class="fas fa-file-download me-1"></i> Buka PDF
+                                <i class="fas fa-file-download"></i> PDF
                             </a>
+                        </td>
+                        <td class="text-center pe-4">
+                            <button onclick="setWinner('${p.tenderId}', '${p.vendorName}')" class="btn btn-success btn-sm rounded-pill px-3 shadow-sm">
+                                <i class="fas fa-trophy me-1"></i> Pilih Pemenang
+                            </button>
                         </td>
                     </tr>`;
             });
         };
 
         /* ==============================================================
-           FUNGSI TENDER & BROADCAST (LOGIKA ASLI DIPERTAHANKAN)
+           FUNGSI BARU: PENETAPAN PEMENANG (FITUR A)
+           ============================================================== */
+        window.setWinner = async (tenderId, vendorName) => {
+            if(confirm(`Tetapkan ${vendorName} sebagai pemenang tender ini?\nTender akan otomatis berubah status menjadi CLOSED.`)) {
+                // Majukan deadline ke hari kemarin agar status otomatis CLOSED
+                const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayString = yesterday.toISOString().split('T')[0];
+
+                try {
+                    await updateDoc(doc(db, "tenders", tenderId), { 
+                        winner: vendorName,
+                        deadline: yesterdayString
+                    });
+                    alert(`Selamat! ${vendorName} telah ditetapkan sebagai pemenang.`);
+                    loadTenders();
+                    loadProposals();
+                } catch (err) {
+                    alert("Gagal menetapkan pemenang: " + err.message);
+                }
+            }
+        };
+
+        /* ==============================================================
+           FUNGSI BARU: EKSPOR REKAP PENAWARAN PDF (FITUR B)
+           ============================================================== */
+        window.exportProposalsPDF = () => {
+            const { jsPDF } = window.jspdf;
+            const docPdf = new jsPDF('l', 'mm', 'a4');
+            docPdf.setFontSize(18);
+            docPdf.text("REKAP PENAWARAN MASUK - PT BIS", 14, 20);
+            docPdf.autoTable({ 
+                html: '#proposalsTable', 
+                startY: 30, 
+                theme: 'grid', 
+                headStyles: { fillColor: [220, 53, 69] },
+                columns: [0, 1, 2, 3] // Hanya ekspor kolom Waktu, Tender, Vendor, Email
+            });
+            docPdf.save("Laporan_Penawaran_Vendor.pdf");
+        };
+
+        /* ==============================================================
+           FUNGSI TENDER & BROADCAST
            ============================================================== */
         document.getElementById('addTenderForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnAddTender');
             const file = document.getElementById('tenderFile').files[0];
             const originalText = btn.innerText;
-
             btn.disabled = true; 
             btn.innerText = "Processing File...";
-
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = async () => {
@@ -749,7 +778,6 @@
                         body: JSON.stringify({ action: "upload", base64: base64, type: file.type, name: file.name }) 
                     });
                     const result = await response.json();
-
                     if(result.status === "success") {
                         await addDoc(collection(db, "tenders"), {
                             name: document.getElementById('tenderName').value,
@@ -758,7 +786,6 @@
                             fileUrl: result.link,
                             createdAt: new Date().toISOString()
                         });
-
                         const vendorSnap = await getDocs(collection(db, "pendaftar"));
                         let emailList = [];
                         vendorSnap.forEach(doc => { 
@@ -771,7 +798,7 @@
                                     action: "broadcast",
                                     emails: emailList,
                                     subject: "TENDER BARU: " + document.getElementById('tenderName').value,
-                                    body: `Yth Bapak/Ibu, Tender baru telah dibuka: ${document.getElementById('tenderName').value}. Silakan cek portal dan kirim penawaran.`
+                                    body: `Yth Bapak/Ibu, Tender baru telah dibuka: ${document.getElementById('tenderName').value}. Silakan cek portal.`
                                 })
                             });
                         }
@@ -780,8 +807,7 @@
                         loadTenders();
                     }
                 } catch (err) { alert("Error: " + err.message);
-                } finally { btn.disabled = false;
-                btn.innerText = originalText; }
+                } finally { btn.disabled = false; btn.innerText = originalText; }
             };
         });
 
@@ -790,21 +816,23 @@
             const selectDropdown = document.getElementById('propTenderSelect');
             const q = query(collection(db, "tenders"), orderBy("createdAt", "desc"));
             const snap = await getDocs(q);
-            
             tbody.innerHTML = '';
             selectDropdown.innerHTML = '<option value="">-- Pilih Tender --</option>';
-            
-            let id = 1;
+            let idCounter = 1;
             snap.forEach(docSnap => {
                 const d = docSnap.data();
                 const isExpired = new Date().toISOString().split('T')[0] > d.deadline;
                 
+                // MENAMPILKAN BADGE PEMENANG JIKA ADA (DARI FITUR BARU)
+                const winnerMarkup = d.winner ? `<div class="winner-badge text-success"><i class="fas fa-trophy text-warning me-1"></i>Pemenang: ${d.winner}</div>` : '';
+                
                 tbody.innerHTML += `
                     <tr>
-                        <td class="ps-4 small text-muted">${id++}</td>
+                        <td class="ps-4 small text-muted">${idCounter++}</td>
                         <td>
-                            <div class="fw-bold">${d.name}</div>
+                            <div class="fw-bold text-dark">${d.name}</div>
                             <div class="small text-muted">${d.desc}</div>
+                            ${winnerMarkup}
                         </td>
                         <td><div class="small fw-semibold"><i class="far fa-calendar-alt me-1"></i>${d.deadline}</div></td>
                         <td><span class="badge-status ${isExpired ? 'status-closed' : 'status-open'}">${isExpired ? 'CLOSED' : 'ACTIVE'}</span></td>
@@ -813,7 +841,7 @@
                                 <i class="fas fa-file-pdf me-1"></i> RKS
                             </a>
                             ${currentUser ? `
-                                <button onclick="openExtendTender('${docSnap.id}', '${d.deadline}')" class="btn btn-light btn-sm ms-2 rounded-circle text-primary" title="Perpanjang Masa">
+                                <button onclick="openExtendTender('${docSnap.id}', '${d.deadline}')" class="btn btn-light btn-sm ms-2 rounded-circle text-primary" title="Perpanjang">
                                     <i class="fas fa-clock"></i>
                                 </button>
                                 <button onclick="deleteTender('${docSnap.id}')" class="btn btn-light btn-sm ms-1 rounded-circle text-danger">
@@ -838,9 +866,6 @@
             }
         };
 
-        /* ==============================================================
-           FUNGSI TAMBAHAN: PERPANJANG TENDER (FITUR BARU)
-           ============================================================== */
         window.openExtendTender = (id, currentDeadline) => {
             document.getElementById('extendTenderId').value = id;
             document.getElementById('newTenderDeadline').value = currentDeadline;
@@ -851,15 +876,12 @@
             e.preventDefault();
             const id = document.getElementById('extendTenderId').value;
             const newDate = document.getElementById('newTenderDeadline').value;
-            
             try {
                 await updateDoc(doc(db, "tenders", id), { deadline: newDate });
                 bootstrap.Modal.getInstance(document.getElementById('extendTenderModal')).hide();
                 alert("Masa tender berhasil diperpanjang!");
                 loadTenders();
-            } catch (err) {
-                alert("Gagal memperbarui deadline: " + err.message);
-            }
+            } catch (err) { alert("Gagal: " + err.message); }
         };
 
         /* ==============================================================
@@ -869,7 +891,6 @@
             const tbody = document.querySelector('#vendorsTable tbody');
             const snap = await getDocs(collection(db, "pendaftar"));
             tbody.innerHTML = '';
-            
             snap.forEach(d => {
                 const v = d.data();
                 const isVerified = v.verified === true;
@@ -898,7 +919,7 @@
         };
 
         window.toggleVerify = async (id, status) => { 
-            await updateDoc(doc(db, "pendaftar", id), { verified: !status }); 
+            await updateDoc(doc(db, "pendaftar", id), { verified: !status });
             loadVendors(); 
         };
 
@@ -918,33 +939,17 @@
                 email: document.getElementById('editRegEmail').value, 
                 whatsapp: document.getElementById('editRegWA').value, 
                 bidangUsaha: document.getElementById('editRegUsaha').value 
-            }); 
+            });
             bootstrap.Modal.getInstance(document.getElementById('editVendorModal')).hide(); 
             loadVendors();
         };
 
-        window.deleteVendor = async (id) => { 
-            if(confirm("Hapus data vendor ini?")) { 
-                await deleteDoc(doc(db, "pendaftar", id)); 
-                loadVendors(); 
-            } 
-        };
+        window.deleteVendor = async (id) => { if(confirm("Hapus vendor?")) { await deleteDoc(doc(db, "pendaftar", id)); loadVendors(); } };
+        window.downloadVendorPDF = () => { const { jsPDF } = window.jspdf; const docPdf = new jsPDF('l', 'mm', 'a4'); docPdf.setFontSize(18); docPdf.text("DATA REKANAN TERDAFTAR - PT BIS", 14, 20); docPdf.autoTable({ html: '#vendorsTable', startY: 30, theme: 'grid', headStyles: { fillColor: [15, 23, 42] } }); docPdf.save("Laporan_Vendor_BIS.pdf"); };
 
-        window.downloadVendorPDF = () => {
-            const { jsPDF } = window.jspdf;
-            const docPdf = new jsPDF('l', 'mm', 'a4'); 
-            docPdf.setFontSize(18); 
-            docPdf.text("DATA REKANAN TERDAFTAR - PT BIS", 14, 20);
-            docPdf.autoTable({ html: '#vendorsTable', startY: 30, theme: 'grid', headStyles: { fillColor: [15, 23, 42] } });
-            docPdf.save("Laporan_Vendor_BIS.pdf");
-        };
-
-        /* LOGIN & REGISTRASI EVENT HANDLERS */
         document.getElementById('loginForm').onsubmit = async (e) => {
             e.preventDefault();
-            try { 
-                await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); 
-                bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide(); 
+            try { await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide(); 
             } catch (err) { alert("Login gagal: " + err.message); }
         };
 
@@ -959,14 +964,12 @@
                 verified: false, 
                 tanggalDaftar: new Date().toISOString() 
             });
-            alert("Pendaftaran berhasil!"); 
-            e.target.reset();
+            alert("Pendaftaran berhasil!"); e.target.reset();
         };
 
         document.getElementById('logoutBtn').onclick = () => signOut(auth);
         document.getElementById('loginBtn').onclick = () => new bootstrap.Modal(document.getElementById('loginModal')).show();
     </script>
-    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
